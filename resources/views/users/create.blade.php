@@ -26,7 +26,7 @@
         </div>
     </div>
 
-    <form action="{{ route('users.store') }}" method="POST" @submit.prevent="step === 1 ? (masterOk = true, step = 2) : $el.submit()">
+    <form action="{{ route('users.store') }}" method="POST">
         @csrf
 
         <!-- ── PASO 1: Clave maestra ── -->
@@ -82,7 +82,8 @@
                 </div>
 
                 <div class="px-6 pb-6">
-                    <button type="submit"
+                    <button type="button"
+                            @click="masterOk = true; step = 2"
                             class="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl transition-colors shadow-sm">
                         <i class="fa-solid fa-arrow-right"></i>
                         Verificar y continuar
@@ -131,7 +132,7 @@
                         </label>
                         <input type="text" name="name" value="{{ old('name') }}"
                                class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition {{ $errors->has('name') ? 'border-red-300 bg-red-50' : '' }}"
-                               placeholder="Ej: Juan Carlos Mamani Torres" required>
+                               placeholder="Ej: Juan Carlos Mamani Torres">
                     </div>
 
                     <!-- DNI + Email en grid -->
@@ -143,7 +144,7 @@
                             <input type="text" name="dni" value="{{ old('dni') }}"
                                    maxlength="8" pattern="\d{8}"
                                    class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm font-mono focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition {{ $errors->has('dni') ? 'border-red-300 bg-red-50' : '' }}"
-                                   placeholder="12345678" required>
+                                   placeholder="12345678">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-slate-700 mb-1.5">
@@ -151,7 +152,7 @@
                             </label>
                             <input type="email" name="email" value="{{ old('email') }}"
                                    class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition {{ $errors->has('email') ? 'border-red-300 bg-red-50' : '' }}"
-                                   placeholder="usuario@jedson.edu.pe" required>
+                                   placeholder="usuario@jedson.edu.pe">
                         </div>
                     </div>
 
@@ -164,7 +165,7 @@
                             <div class="relative">
                                 <input :type="showPass ? 'text' : 'password'" name="password"
                                        class="w-full px-4 py-2.5 pr-10 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition {{ $errors->has('password') ? 'border-red-300 bg-red-50' : '' }}"
-                                       placeholder="Mín. 8 caracteres" required>
+                                       placeholder="Mín. 8 caracteres">
                                 <button type="button" @click="showPass = !showPass"
                                         class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                                     <i :class="showPass ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'" class="text-xs"></i>
@@ -178,7 +179,7 @@
                             <div class="relative">
                                 <input :type="showConfirm ? 'text' : 'password'" name="password_confirmation"
                                        class="w-full px-4 py-2.5 pr-10 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-                                       placeholder="Repite la contraseña" required>
+                                       placeholder="Repite la contraseña">
                                 <button type="button" @click="showConfirm = !showConfirm"
                                         class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
                                     <i :class="showConfirm ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'" class="text-xs"></i>
@@ -194,8 +195,7 @@
                                 Perfil / Rol <span class="text-red-500">*</span>
                             </label>
                             <select name="user_type"
-                                    class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-white {{ $errors->has('user_type') ? 'border-red-300 bg-red-50' : '' }}"
-                                    required>
+                                    class="w-full px-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition bg-white {{ $errors->has('user_type') ? 'border-red-300 bg-red-50' : '' }}">
                                 <option value="">Seleccionar…</option>
                                 @foreach(['administrador' => 'Administrador', 'auxiliar' => 'Auxiliar', 'docente' => 'Docente', 'estudiante' => 'Estudiante'] as $val => $label)
                                     <option value="{{ $val }}" {{ old('user_type') === $val ? 'selected' : '' }}>
