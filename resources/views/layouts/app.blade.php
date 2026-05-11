@@ -132,6 +132,18 @@
                 <span x-show="sidebarOpen" x-transition>Lector QR</span>
             </a>
 
+            @if(auth()->user()->isAdmin())
+            <div x-show="sidebarOpen" x-transition class="px-3 pt-3 mb-2">
+                <p class="text-slate-500 text-xs uppercase font-semibold tracking-wider">Sistema</p>
+            </div>
+
+            <a href="{{ route('users.index') }}"
+               class="sidebar-link {{ request()->routeIs('users.*') ? 'active' : '' }}">
+                <i class="fa-solid fa-users-gear w-5 text-center flex-shrink-0"></i>
+                <span x-show="sidebarOpen" x-transition>Usuarios</span>
+            </a>
+            @endif
+
         </nav>
 
         <!-- User info -->

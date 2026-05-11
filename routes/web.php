@@ -6,6 +6,7 @@ use App\Http\Controllers\AlumnoController;
 use App\Http\Controllers\MatriculaController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\AsistenciaController;
+use App\Http\Controllers\UserController;
 
 // Landing page (public)
 Route::get('/', fn() => view('landing'))->name('landing');
@@ -45,6 +46,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/pagos/alumno/{alumno}', [PagoController::class, 'alumno'])->name('pagos.alumno');
     Route::post('/pagos/alumno/{alumno}/registrar', [PagoController::class, 'registrarPension'])->name('pagos.registrar');
     Route::post('/pagos/importar', [PagoController::class, 'importar'])->name('pagos.importar');
+
+    // Usuarios (solo admin)
+    Route::get('/usuarios', [UserController::class, 'index'])->name('users.index');
+    Route::get('/usuarios/crear', [UserController::class, 'create'])->name('users.create');
+    Route::post('/usuarios', [UserController::class, 'store'])->name('users.store');
+    Route::post('/usuarios/{user}/toggle', [UserController::class, 'toggle'])->name('users.toggle');
 
     // Asistencias
     Route::get('/asistencias', [AsistenciaController::class, 'index'])->name('asistencias.index');
