@@ -38,7 +38,9 @@
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 <div class="flex items-center justify-between h-16">
 <div class="flex items-center gap-3">
-<div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center">
+<img src="{{ asset('images/logo.png') }}" alt="Logo JEDSON" class="w-10 h-10 rounded-xl object-contain"
+     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+<div style="display:none" class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl items-center justify-center">
 <i class="fa-solid fa-graduation-cap text-white text-lg"></i>
 </div>
 <div>
@@ -310,7 +312,9 @@ En el Colegio Pre JEDSON creemos que cada estudiante tiene un potencial único. 
 <footer class="border-t border-white/10 py-10">
 <div class="max-w-7xl mx-auto px-4 text-center">
 <div class="flex items-center justify-center gap-3 mb-4">
-<div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center">
+<img src="{{ asset('images/logo.png') }}" alt="Logo JEDSON" class="w-8 h-8 rounded-lg object-contain"
+     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+<div style="display:none" class="w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg items-center justify-center">
 <i class="fa-solid fa-graduation-cap text-white text-sm"></i>
 </div>
 <span class="font-bold text-lg">Colegio Pre JEDSON</span>

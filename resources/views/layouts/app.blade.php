@@ -60,7 +60,9 @@
     >
         <!-- Logo -->
         <div class="flex items-center gap-3 px-4 py-4 border-b border-slate-700 min-h-[64px]">
-            <div class="flex-shrink-0 w-9 h-9 bg-blue-700 rounded-lg flex items-center justify-center">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-9 h-9 rounded-lg object-contain flex-shrink-0"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+            <div style="display:none" class="flex-shrink-0 w-9 h-9 bg-blue-700 rounded-lg items-center justify-center">
                 <i class="fa-solid fa-graduation-cap text-white text-lg"></i>
             </div>
             <div x-show="sidebarOpen" x-transition class="overflow-hidden">

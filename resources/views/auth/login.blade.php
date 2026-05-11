@@ -91,14 +91,12 @@
                 <div class="relative">
                     <!-- Logo -->
                     <div class="fade-up inline-block mb-4">
-                        @if(file_exists(public_path('images/logo.png')))
-                            <img src="{{ asset('images/logo.png') }}" alt="Logo JEDSON"
-                                 class="h-16 w-auto mx-auto floating" style="animation-duration:3.5s">
-                        @else
-                            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg shadow-blue-500/30 floating" style="animation-duration:3.5s">
-                                <i class="fa-solid fa-graduation-cap text-white text-2xl"></i>
-                            </div>
-                        @endif
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo JEDSON"
+                             class="h-16 w-auto mx-auto floating" style="animation-duration:3.5s"
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'">
+                        <div style="display:none" class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg floating" style="animation-duration:3.5s">
+                            <i class="fa-solid fa-graduation-cap text-white text-2xl"></i>
+                        </div>
                     </div>
                     <h1 class="fade-up-d1 text-white text-2xl font-extrabold tracking-tight">Colegio Pre JEDSON</h1>
                     <p class="fade-up-d2 text-slate-400 text-sm mt-1">Arequipa &bull; Perú &bull; Sistema de Gestión</p>
@@ -163,13 +161,11 @@
                     </button>
 
                     <!-- Logo pequeño -->
-                    @if(file_exists(public_path('images/logo.png')))
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-9 w-auto flex-shrink-0">
-                    @else
-                        <div class="flex-shrink-0 w-9 h-9 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-blue-500/25">
-                            <i class="fa-solid fa-graduation-cap text-white text-sm"></i>
-                        </div>
-                    @endif
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-9 w-auto shrink-0"
+                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                    <div style="display:none" class="shrink-0 w-9 h-9 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl items-center justify-center shadow-lg shadow-blue-500/25">
+                        <i class="fa-solid fa-graduation-cap text-white text-sm"></i>
+                    </div>
 
                     <div class="flex-1 min-w-0">
                         <p class="text-white font-bold text-sm leading-tight">Colegio Pre JEDSON</p>
