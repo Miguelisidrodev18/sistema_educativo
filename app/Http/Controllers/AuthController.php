@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
@@ -17,25 +19,42 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->validate([
-            'email'    => 'required|email',
-            'password' => 'required|string',
+        $request->validate([
+            'identifier' => 'required|string',
+            'password'   => 'required|string',
+            'role'       => 'required|string|in:administrador,auxiliar,docente,estudiante',
         ]);
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
-            $request->session()->regenerate();
+        $identifier = trim($request->input('identifier'));
+        $role       = $request->input('role');
 
-            if (!Auth::user()->activo) {
-                Auth::logout();
-                return back()->withErrors(['email' => 'Su cuenta está desactivada. Contacte al administrador.']);
-            }
+        // DNI: exactamente 8 dígitos numéricos; lo demás se trata como email
+        $field = preg_match('/^\d{8}$/', $identifier) ? 'dni' : 'email';
 
-            return redirect()->intended(route('dashboard'));
+        $user = User::where($field, $identifier)->first();
+
+        if (! $user || ! Hash::check($request->input('password'), $user->password)) {
+            return back()
+                ->withInput($request->only('identifier', 'role'))
+                ->withErrors(['identifier' => 'Las credenciales no son correctas.']);
         }
 
-        return back()->withErrors([
-            'email' => 'Las credenciales no coinciden con nuestros registros.',
-        ])->onlyInput('email');
+        if ($user->user_type !== $role) {
+            return back()
+                ->withInput($request->only('identifier', 'role'))
+                ->withErrors(['identifier' => 'Este usuario no pertenece al perfil "' . ucfirst($role) . '".']);
+        }
+
+        if (! $user->activo) {
+            return back()
+                ->withInput($request->only('identifier', 'role'))
+                ->withErrors(['identifier' => 'Su cuenta está desactivada. Contacte al administrador.']);
+        }
+
+        Auth::login($user, $request->boolean('remember'));
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('dashboard'));
     }
 
     public function logout(Request $request)
