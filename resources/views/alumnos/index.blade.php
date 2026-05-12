@@ -306,18 +306,18 @@
                         <td class="px-4 py-3 text-slate-500 font-mono text-xs">{{ $alumno->dni }}</td>
                         <td class="px-4 py-3">
                             @if($alumno->nivel_academico)
-                                <span class="inline-flex items-center gap-1 text-xs font-semibold px-2.5 py-1 rounded-full
-                                    {{ $alumno->nivel_academico === 'INICIAL' ? 'bg-pink-100 text-pink-700' : ($alumno->nivel_academico === 'PRIMARIA' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700') }}">
+                                <span class="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-lg
+                                    {{ $alumno->nivel_academico === 'INICIAL' ? 'bg-pink-500 text-white' : ($alumno->nivel_academico === 'PRIMARIA' ? 'bg-blue-600 text-white' : 'bg-violet-600 text-white') }}">
                                     {{ $alumno->nivel_academico }}
                                 </span>
-                                <span class="text-slate-400 text-xs ml-1">{{ $alumno->grado_seccion }}</span>
+                                <p class="text-slate-500 text-xs mt-0.5 font-medium">{{ $alumno->grado_seccion }}</p>
                             @else
                                 <span class="text-slate-300 text-xs">Sin asignar</span>
                             @endif
                         </td>
                         <td class="px-4 py-3">
                             @if($alumno->sede)
-                                <span class="inline-flex items-center gap-1 text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded-full font-medium">
+                                <span class="inline-flex items-center gap-1 text-xs bg-slate-700 text-white px-2.5 py-1 rounded-lg font-semibold">
                                     <i class="fa-solid fa-building-columns text-[9px]"></i>
                                     {{ $alumno->sede->nombre }}
                                 </span>
@@ -335,12 +335,12 @@
                         </td>
                         <td class="px-4 py-3">
                             @if($alumno->activo)
-                                <span class="inline-flex items-center gap-1.5 bg-green-50 text-green-700 border border-green-200 text-xs font-semibold px-2.5 py-1 rounded-full">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Activo
+                                <span class="inline-flex items-center gap-1.5 bg-green-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg shadow-sm shadow-green-200">
+                                    <i class="fa-solid fa-circle-check text-[10px]"></i> Activo
                                 </span>
                             @else
-                                <span class="inline-flex items-center gap-1.5 bg-red-50 text-red-600 border border-red-200 text-xs font-semibold px-2.5 py-1 rounded-full">
-                                    <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span> Inactivo
+                                <span class="inline-flex items-center gap-1.5 bg-red-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg shadow-sm shadow-red-200">
+                                    <i class="fa-solid fa-circle-xmark text-[10px]"></i> Inactivo
                                 </span>
                             @endif
                         </td>

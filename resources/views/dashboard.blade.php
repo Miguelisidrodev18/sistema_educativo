@@ -62,82 +62,58 @@
      ══════════════════════════════════════════════════════ -->
 <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4 mb-6 fade-up-d1">
 
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
-        <div class="flex items-start justify-between">
-            <div>
-                <p class="text-slate-400 text-[11px] font-semibold uppercase tracking-wide">Alumnos</p>
-                <p class="text-3xl font-extrabold text-slate-800 mt-1 leading-none">{{ number_format($stats['total_alumnos']) }}</p>
-                <p class="text-slate-400 text-xs mt-1.5">Activos</p>
-            </div>
-            <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-users text-blue-600 text-sm"></i>
-            </div>
+    <div class="bg-blue-600 rounded-2xl shadow-md shadow-blue-200 p-5 text-white">
+        <div class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+            <i class="fa-solid fa-users text-white text-sm"></i>
         </div>
+        <p class="text-3xl font-black leading-none">{{ number_format($stats['total_alumnos']) }}</p>
+        <p class="text-blue-100 text-[11px] font-semibold uppercase tracking-wide mt-1.5">Alumnos</p>
+        <p class="text-blue-200 text-xs">Activos</p>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
-        <div class="flex items-start justify-between">
-            <div>
-                <p class="text-slate-400 text-[11px] font-semibold uppercase tracking-wide">Docentes</p>
-                <p class="text-3xl font-extrabold text-slate-800 mt-1 leading-none">{{ number_format($stats['total_docentes']) }}</p>
-                <p class="text-slate-400 text-xs mt-1.5">Personal activo</p>
-            </div>
-            <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-chalkboard-user text-purple-600 text-sm"></i>
-            </div>
+    <div class="bg-violet-600 rounded-2xl shadow-md shadow-violet-200 p-5 text-white">
+        <div class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+            <i class="fa-solid fa-chalkboard-user text-white text-sm"></i>
         </div>
+        <p class="text-3xl font-black leading-none">{{ number_format($stats['total_docentes']) }}</p>
+        <p class="text-violet-100 text-[11px] font-semibold uppercase tracking-wide mt-1.5">Docentes</p>
+        <p class="text-violet-200 text-xs">Personal activo</p>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
-        <div class="flex items-start justify-between">
-            <div>
-                <p class="text-slate-400 text-[11px] font-semibold uppercase tracking-wide">Matrículas {{ date('Y') }}</p>
-                <p class="text-3xl font-extrabold text-slate-800 mt-1 leading-none">{{ number_format($stats['matriculas_anio']) }}</p>
-                <p class="text-slate-400 text-xs mt-1.5">Este año</p>
-            </div>
-            <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-file-signature text-green-600 text-sm"></i>
-            </div>
+    <div class="bg-teal-600 rounded-2xl shadow-md shadow-teal-200 p-5 text-white">
+        <div class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+            <i class="fa-solid fa-file-signature text-white text-sm"></i>
         </div>
+        <p class="text-3xl font-black leading-none">{{ number_format($stats['matriculas_anio']) }}</p>
+        <p class="text-teal-100 text-[11px] font-semibold uppercase tracking-wide mt-1.5">Matrículas</p>
+        <p class="text-teal-200 text-xs">{{ date('Y') }}</p>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
-        <div class="flex items-start justify-between">
-            <div>
-                <p class="text-slate-400 text-[11px] font-semibold uppercase tracking-wide">Pagos Hoy</p>
-                <p class="text-3xl font-extrabold text-slate-800 mt-1 leading-none">{{ number_format($stats['pagos_hoy']) }}</p>
-                <p class="text-slate-400 text-xs mt-1.5">Pensiones</p>
-            </div>
-            <div class="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-receipt text-yellow-600 text-sm"></i>
-            </div>
+    <div class="bg-amber-500 rounded-2xl shadow-md shadow-amber-200 p-5 text-white">
+        <div class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+            <i class="fa-solid fa-receipt text-white text-sm"></i>
         </div>
+        <p class="text-3xl font-black leading-none">{{ number_format($stats['pagos_hoy']) }}</p>
+        <p class="text-amber-100 text-[11px] font-semibold uppercase tracking-wide mt-1.5">Pagos Hoy</p>
+        <p class="text-amber-200 text-xs">Pensiones</p>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
-        <div class="flex items-start justify-between">
-            <div>
-                <p class="text-slate-400 text-[11px] font-semibold uppercase tracking-wide">Recaudado</p>
-                <p class="text-xl font-extrabold text-slate-800 mt-1 leading-none">S/ {{ number_format($stats['recaudado_mes'], 0) }}</p>
-                <p class="text-slate-400 text-xs mt-1.5">{{ now()->locale('es')->isoFormat('MMM YYYY') }}</p>
-            </div>
-            <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-money-bill-wave text-emerald-600 text-sm"></i>
-            </div>
+    <div class="bg-emerald-600 rounded-2xl shadow-md shadow-emerald-200 p-5 text-white">
+        <div class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+            <i class="fa-solid fa-money-bill-wave text-white text-sm"></i>
         </div>
+        <p class="text-xl font-black leading-none">S/ {{ number_format($stats['recaudado_mes'], 0) }}</p>
+        <p class="text-emerald-100 text-[11px] font-semibold uppercase tracking-wide mt-1.5">Recaudado</p>
+        <p class="text-emerald-200 text-xs">{{ now()->locale('es')->isoFormat('MMM YYYY') }}</p>
     </div>
 
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 p-5">
-        <div class="flex items-start justify-between">
-            <div>
-                <p class="text-slate-400 text-[11px] font-semibold uppercase tracking-wide">Presentes</p>
-                <p class="text-3xl font-extrabold text-slate-800 mt-1 leading-none">{{ number_format($stats['asistencia_hoy']) }}</p>
-                <p class="text-slate-400 text-xs mt-1.5">Hoy</p>
-            </div>
-            <div class="w-10 h-10 bg-sky-100 rounded-xl flex items-center justify-center shrink-0">
-                <i class="fa-solid fa-clipboard-check text-sky-600 text-sm"></i>
-            </div>
+    <div class="bg-sky-500 rounded-2xl shadow-md shadow-sky-200 p-5 text-white">
+        <div class="w-9 h-9 bg-white/20 rounded-xl flex items-center justify-center mb-3">
+            <i class="fa-solid fa-clipboard-check text-white text-sm"></i>
         </div>
+        <p class="text-3xl font-black leading-none">{{ number_format($stats['asistencia_hoy']) }}</p>
+        <p class="text-sky-100 text-[11px] font-semibold uppercase tracking-wide mt-1.5">Presentes</p>
+        <p class="text-sky-200 text-xs">Hoy</p>
     </div>
 
 </div>

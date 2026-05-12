@@ -7,37 +7,31 @@
 
 <!-- Stats -->
 <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-slate-500 text-xs font-medium uppercase tracking-wide">Total Alumnos</p>
-                <p class="text-3xl font-extrabold text-slate-800 mt-1">{{ number_format($totalAlumnos) }}</p>
-            </div>
-            <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                <i class="fa-solid fa-users text-blue-700"></i>
-            </div>
+    <div class="bg-blue-600 rounded-2xl shadow-md shadow-blue-200 p-5 text-white flex items-center gap-4">
+        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-users text-white text-lg"></i>
+        </div>
+        <div>
+            <p class="text-blue-100 text-xs font-semibold uppercase tracking-wide">Total Alumnos</p>
+            <p class="text-3xl font-black text-white leading-none mt-0.5">{{ number_format($totalAlumnos) }}</p>
         </div>
     </div>
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-slate-500 text-xs font-medium uppercase tracking-wide">Pagos Hoy</p>
-                <p class="text-3xl font-extrabold text-slate-800 mt-1">{{ number_format($pagadosHoy) }}</p>
-            </div>
-            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                <i class="fa-solid fa-receipt text-green-700"></i>
-            </div>
+    <div class="bg-green-500 rounded-2xl shadow-md shadow-green-200 p-5 text-white flex items-center gap-4">
+        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-receipt text-white text-lg"></i>
+        </div>
+        <div>
+            <p class="text-green-100 text-xs font-semibold uppercase tracking-wide">Pagos Hoy</p>
+            <p class="text-3xl font-black text-white leading-none mt-0.5">{{ number_format($pagadosHoy) }}</p>
         </div>
     </div>
-    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5">
-        <div class="flex items-center justify-between">
-            <div>
-                <p class="text-slate-500 text-xs font-medium uppercase tracking-wide">Recaudado {{ $anio }}</p>
-                <p class="text-2xl font-extrabold text-slate-800 mt-1">S/ {{ number_format($totalRecaudado, 2) }}</p>
-            </div>
-            <div class="w-10 h-10 bg-emerald-100 rounded-lg flex items-center justify-center">
-                <i class="fa-solid fa-money-bill-wave text-emerald-700"></i>
-            </div>
+    <div class="bg-emerald-600 rounded-2xl shadow-md shadow-emerald-200 p-5 text-white flex items-center gap-4">
+        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center shrink-0">
+            <i class="fa-solid fa-money-bill-wave text-white text-lg"></i>
+        </div>
+        <div>
+            <p class="text-emerald-100 text-xs font-semibold uppercase tracking-wide">Recaudado {{ $anio }}</p>
+            <p class="text-2xl font-black text-white leading-none mt-0.5">S/ {{ number_format($totalRecaudado, 2) }}</p>
         </div>
     </div>
 </div>
@@ -173,17 +167,22 @@
                         $pagosAlumno  = $alumno->pagosPension->keyBy('mes_pagado');
                         $mesesPagados = $pagosAlumno->count();
                         $pct          = $totalMeses > 0 ? round(($mesesPagados / $totalMeses) * 100) : 0;
-                        $colorBar     = $pct >= 100 ? 'bg-green-500' : ($pct >= 50 ? 'bg-blue-500' : ($pct > 0 ? 'bg-yellow-400' : 'bg-slate-200'));
-                        $colorText    = $pct >= 100 ? 'text-green-700' : ($pct >= 50 ? 'text-blue-700' : ($pct > 0 ? 'text-yellow-700' : 'text-slate-400'));
+                        $colorBar     = $pct >= 100 ? 'bg-green-500' : ($pct >= 50 ? 'bg-blue-500' : ($pct > 0 ? 'bg-amber-400' : 'bg-slate-200'));
+                        $colorText    = $pct >= 100 ? 'text-green-600' : ($pct >= 50 ? 'text-blue-600' : ($pct > 0 ? 'text-amber-600' : 'text-slate-400'));
+                        $nivelBadgePago = match($alumno->nivel_academico) {
+                            'INICIAL'    => 'bg-pink-500 text-white',
+                            'PRIMARIA'   => 'bg-blue-600 text-white',
+                            'SECUNDARIA' => 'bg-violet-600 text-white',
+                            default      => 'bg-slate-200 text-slate-600',
+                        };
                     @endphp
-                    <tr class="hover:bg-blue-50/20 transition group">
+                    <tr class="hover:bg-slate-50/80 transition group">
                         <td class="px-4 py-3">
                             <p class="font-semibold text-slate-800 leading-tight">{{ $alumno->apellidos }}, {{ $alumno->nombres }}</p>
                             <div class="flex items-center gap-1.5 mt-0.5">
                                 <span class="font-mono text-slate-400 text-[10px]">{{ $alumno->dni }}</span>
                                 @if($alumno->nivel_academico)
-                                    <span class="text-[10px] px-1.5 py-0.5 rounded-full font-semibold
-                                        {{ $alumno->nivel_academico === 'INICIAL' ? 'bg-pink-100 text-pink-700' : ($alumno->nivel_academico === 'PRIMARIA' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700') }}">
+                                    <span class="text-[10px] px-2 py-0.5 rounded-full font-bold {{ $nivelBadgePago }}">
                                         {{ substr($alumno->nivel_academico,0,3) }}
                                     </span>
                                 @endif
@@ -213,12 +212,12 @@
                             <td class="px-1 py-3 text-center">
                                 @if(isset($pagosAlumno[$mes]))
                                     <span title="S/ {{ number_format($pagosAlumno[$mes]->monto, 2) }}"
-                                          class="inline-flex w-6 h-6 items-center justify-center rounded-full bg-green-100 text-green-600">
-                                        <i class="fa-solid fa-check" style="font-size:8px"></i>
+                                          class="inline-flex w-7 h-7 items-center justify-center rounded-lg bg-green-500 text-white shadow-sm shadow-green-200">
+                                        <i class="fa-solid fa-check" style="font-size:9px"></i>
                                     </span>
                                 @else
-                                    <span class="inline-flex w-6 h-6 items-center justify-center rounded-full bg-slate-100 text-slate-300">
-                                        <i class="fa-solid fa-minus" style="font-size:8px"></i>
+                                    <span class="inline-flex w-7 h-7 items-center justify-center rounded-lg bg-slate-100 text-slate-300">
+                                        <i class="fa-solid fa-minus" style="font-size:9px"></i>
                                     </span>
                                 @endif
                             </td>
@@ -226,7 +225,7 @@
 
                         <td class="px-4 py-3 text-center">
                             <a href="{{ route('pagos.alumno', $alumno) }}?anio={{ $anio }}"
-                               class="inline-flex items-center gap-1 bg-blue-700 hover:bg-blue-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition opacity-80 group-hover:opacity-100">
+                               class="inline-flex items-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm opacity-80 group-hover:opacity-100">
                                 <i class="fa-solid fa-hand-holding-dollar"></i>
                             </a>
                         </td>

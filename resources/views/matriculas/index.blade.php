@@ -311,7 +311,21 @@
             </thead>
             <tbody class="divide-y divide-slate-50">
                 @forelse($matriculas as $mat)
-                    <tr class="hover:bg-blue-50/30 transition group">
+                    @php
+                        $nivelBorder = match($mat->nivel_academico) {
+                            'INICIAL'    => 'border-l-4 border-l-pink-400',
+                            'PRIMARIA'   => 'border-l-4 border-l-blue-500',
+                            'SECUNDARIA' => 'border-l-4 border-l-violet-500',
+                            default      => '',
+                        };
+                        $nivelBadge = match($mat->nivel_academico) {
+                            'INICIAL'    => 'bg-pink-500 text-white',
+                            'PRIMARIA'   => 'bg-blue-600 text-white',
+                            'SECUNDARIA' => 'bg-violet-600 text-white',
+                            default      => 'bg-slate-100 text-slate-600',
+                        };
+                    @endphp
+                    <tr class="hover:bg-slate-50/80 transition {{ $nivelBorder }}">
                         <td class="px-4 py-3">
                             <a href="{{ route('matriculas.show', $mat) }}"
                                class="font-mono text-xs text-blue-700 hover:underline font-bold">
@@ -325,13 +339,14 @@
                             </a>
                             <span class="text-slate-400 text-xs font-mono">{{ $mat->alumno->dni }}</span>
                         </td>
-                        <td class="px-4 py-3 text-slate-700 font-bold">{{ $mat->periodo }}</td>
                         <td class="px-4 py-3">
-                            <span class="text-xs font-semibold px-2.5 py-1 rounded-full
-                                {{ $mat->nivel_academico === 'INICIAL' ? 'bg-pink-100 text-pink-700' : ($mat->nivel_academico === 'PRIMARIA' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700') }}">
+                            <span class="text-sm font-black text-slate-700">{{ $mat->periodo }}</span>
+                        </td>
+                        <td class="px-4 py-3">
+                            <span class="text-xs font-bold px-2.5 py-1 rounded-lg {{ $nivelBadge }}">
                                 {{ $mat->nivel_academico }}
                             </span>
-                            <span class="text-slate-400 text-xs ml-1">{{ $mat->grado_seccion }}</span>
+                            <p class="text-slate-500 text-xs mt-1 font-medium">{{ $mat->grado_seccion }}</p>
                         </td>
                         <td class="px-4 py-3 text-slate-500 text-xs">{{ $mat->situacion }}</td>
                         <td class="px-4 py-3">
@@ -339,24 +354,25 @@
                                 @php
                                     $ep = $mat->pagoMatricula->estado_pago;
                                     $epClass = match($ep) {
-                                        'PAGADO'    => 'bg-green-100 text-green-700 border-green-200',
-                                        'PENDIENTE' => 'bg-yellow-100 text-yellow-700 border-yellow-200',
-                                        'VENCIDO'   => 'bg-red-100 text-red-700 border-red-200',
-                                        'PARCIAL'   => 'bg-blue-100 text-blue-700 border-blue-200',
-                                        default     => 'bg-slate-100 text-slate-600 border-slate-200',
+                                        'PAGADO'    => 'bg-green-500 text-white',
+                                        'PENDIENTE' => 'bg-amber-400 text-white',
+                                        'VENCIDO'   => 'bg-red-500 text-white',
+                                        'PARCIAL'   => 'bg-blue-500 text-white',
+                                        default     => 'bg-slate-200 text-slate-600',
                                     };
                                 @endphp
-                                <span class="text-xs px-2.5 py-1 rounded-full font-semibold border {{ $epClass }}">{{ $ep }}</span>
+                                <span class="text-xs px-2.5 py-1 rounded-lg font-bold {{ $epClass }}">{{ $ep }}</span>
                                 <p class="text-slate-400 text-xs mt-0.5">S/ {{ number_format($mat->pagoMatricula->monto_matricula, 2) }}</p>
                             @else
                                 <span class="text-slate-300 text-xs">Sin registro</span>
                             @endif
                         </td>
                         <td class="px-4 py-3">
-                            <span class="text-xs px-2.5 py-1 rounded-full font-semibold
-                                {{ $mat->estado === 'activo' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-slate-100 text-slate-500' }}">
-                                {{ ucfirst($mat->estado) }}
-                            </span>
+                            @if($mat->estado === 'activo')
+                                <span class="text-xs px-2.5 py-1 rounded-lg font-bold bg-green-500 text-white">Activo</span>
+                            @else
+                                <span class="text-xs px-2.5 py-1 rounded-lg font-bold bg-slate-200 text-slate-500">{{ ucfirst($mat->estado) }}</span>
+                            @endif
                         </td>
                     </tr>
                 @empty
