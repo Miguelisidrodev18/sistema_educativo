@@ -7,53 +7,54 @@
 
 body {
     font-family: 'DejaVu Sans', Arial, sans-serif;
-    font-size: 9.5px;
+    font-size: 9px;
     color: #000;
     background: #fff;
+    width: 100%;
 }
 
-/* ── Página tamaño ticket (media carta ancho) ── */
+/* ── Página ticketera 80mm ancho ── */
 @page {
-    size: 148mm 210mm;   /* A5 portrait */
-    margin: 8mm 10mm;
+    size: 80mm 200mm;
+    margin: 4mm 5mm;
 }
 
 .page { width: 100%; background: #fff; }
 
-/* ── Borde superior grueso ── */
-.borde-top    { border-top: 3px solid #000; margin-bottom: 6px; }
-.borde-medium { border-top: 1.5px solid #000; margin: 5px 0; }
-.borde-dash   { border-top: 1px dashed #000; margin: 5px 0; }
-.borde-bottom { border-top: 3px double #000; margin-top: 6px; }
+/* ── Bordes ── */
+.borde-top    { border-top: 3px solid #000; margin-bottom: 5px; }
+.borde-medium { border-top: 1.5px solid #000; margin: 4px 0; }
+.borde-dash   { border-top: 1px dashed #000; margin: 4px 0; }
+.borde-bottom { border-top: 3px double #000; margin-top: 5px; }
 
 /* ── Encabezado ── */
-.header { text-align: center; padding: 4px 0; }
+.header { text-align: center; padding: 3px 0; }
 .logo-img {
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     object-fit: contain;
     display: block;
-    margin: 0 auto 4px;
+    margin: 0 auto 3px;
 }
 .logo-fallback {
-    width: 44px; height: 44px;
+    width: 48px; height: 48px;
     border: 2px solid #000;
     border-radius: 4px;
-    display: inline-block;
-    line-height: 40px;
+    display: block;
+    line-height: 44px;
     font-weight: 900;
-    font-size: 18px;
+    font-size: 22px;
     text-align: center;
-    margin-bottom: 4px;
+    margin: 0 auto 3px;
 }
 .inst-nombre {
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 .inst-sub {
-    font-size: 7.5px;
+    font-size: 7px;
     color: #333;
     margin-top: 1px;
 }
@@ -61,15 +62,15 @@ body {
 /* ── Título del comprobante ── */
 .comp-titulo {
     text-align: center;
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 900;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    padding: 5px 0 3px;
+    letter-spacing: 1.5px;
+    padding: 4px 0 2px;
 }
 .comp-num {
     text-align: center;
-    font-size: 8px;
+    font-size: 7.5px;
     color: #333;
     margin-bottom: 2px;
 }
@@ -78,57 +79,51 @@ body {
 .fila {
     display: table;
     width: 100%;
-    padding: 2.5px 0;
+    padding: 2px 0;
 }
 .fila-lbl {
     display: table-cell;
     color: #444;
-    font-size: 8.5px;
-    width: 42%;
+    font-size: 8px;
+    width: 45%;
     vertical-align: top;
 }
 .fila-val {
     display: table-cell;
     font-weight: bold;
-    font-size: 8.5px;
+    font-size: 8px;
     vertical-align: top;
     text-align: right;
-}
-.fila-val-left {
-    display: table-cell;
-    font-weight: bold;
-    font-size: 8.5px;
-    vertical-align: top;
 }
 
 /* ── Sección de título ── */
 .sec-titulo {
-    font-size: 8px;
+    font-size: 7.5px;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: .5px;
-    padding: 3px 0 1px;
+    padding: 2px 0 1px;
     color: #000;
 }
 
 /* ── Alumno destacado ── */
 .alumno-box {
     border: 1px solid #000;
-    padding: 5px 7px;
-    margin: 4px 0;
+    padding: 4px 6px;
+    margin: 3px 0;
 }
 .alumno-nombre {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 900;
     text-transform: uppercase;
 }
 .alumno-sub {
-    font-size: 8px;
+    font-size: 7.5px;
     color: #333;
     margin-top: 1px;
 }
 
-/* ── Detalle de pagos (estilo boleta) ── */
+/* ── Detalle de pagos ── */
 .detalle-header {
     display: table;
     width: 100%;
@@ -136,8 +131,8 @@ body {
     padding-bottom: 2px;
     margin-bottom: 2px;
 }
-.dh-desc { display: table-cell; font-size: 7.5px; font-weight: 900; text-transform: uppercase; width: 60%; }
-.dh-monto{ display: table-cell; font-size: 7.5px; font-weight: 900; text-transform: uppercase; text-align: right; }
+.dh-desc  { display: table-cell; font-size: 7px; font-weight: 900; text-transform: uppercase; width: 62%; }
+.dh-monto { display: table-cell; font-size: 7px; font-weight: 900; text-transform: uppercase; text-align: right; }
 
 .detalle-fila {
     display: table;
@@ -145,95 +140,77 @@ body {
     padding: 2px 0;
     border-bottom: 1px dotted #bbb;
 }
-.df-desc  { display: table-cell; font-size: 8.5px; width: 60%; vertical-align: middle; }
-.df-monto { display: table-cell; font-size: 8.5px; font-weight: bold; text-align: right; vertical-align: middle; }
+.df-desc  { display: table-cell; font-size: 8px; width: 62%; vertical-align: middle; }
+.df-monto { display: table-cell; font-size: 8px; font-weight: bold; text-align: right; vertical-align: middle; }
 
 .total-box {
     display: table;
     width: 100%;
     border-top: 2px solid #000;
-    padding-top: 4px;
-    margin-top: 3px;
+    padding-top: 3px;
+    margin-top: 2px;
 }
-.total-lbl { display: table-cell; font-size: 10px; font-weight: 900; text-transform: uppercase; }
-.total-val { display: table-cell; font-size: 12px; font-weight: 900; text-align: right; }
+.total-lbl { display: table-cell; font-size: 9px; font-weight: 900; text-transform: uppercase; }
+.total-val { display: table-cell; font-size: 11px; font-weight: 900; text-align: right; }
 
 /* ── Estado de pago ── */
 .estado-box {
     text-align: center;
     border: 2px solid #000;
-    padding: 3px 8px;
+    padding: 3px 6px;
     font-size: 10px;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin: 5px 0;
-    display: inline-block;
+    margin: 4px 0;
+    display: block;
     width: 100%;
 }
 .estado-pagado   { border-style: double; }
 .estado-pendiente{ border-style: dashed; }
 
 /* ── QR ── */
-.qr-box { text-align: center; margin: 6px 0; }
+.qr-box { text-align: center; margin: 5px 0; }
 .qr-box img { width: 55px; height: 55px; }
-.qr-label { font-size: 7px; color: #555; margin-top: 2px; }
+.qr-label { font-size: 6.5px; color: #555; margin-top: 2px; }
 
 /* ── Firma ── */
-.firma-box {
-    margin-top: 10px;
-    text-align: center;
-}
-.firma-linea {
-    border-top: 1px solid #000;
-    width: 110px;
-    margin: 0 auto 3px;
-}
-.firma-txt { font-size: 8px; }
+.firma-box { margin-top: 8px; text-align: center; }
+.firma-linea { border-top: 1px solid #000; width: 100px; margin: 0 auto 3px; }
+.firma-txt { font-size: 7.5px; }
 
 /* ── Footer ── */
-.footer {
-    margin-top: 6px;
-    text-align: center;
-    font-size: 7px;
-    color: #555;
-}
-
-/* ── Marca de agua PAGADO (solo cuando está pagado) ── */
-.sello-pagado {
-    text-align: center;
-    font-size: 22px;
-    font-weight: 900;
-    letter-spacing: 4px;
-    color: #bbb;
-    border: 3px solid #bbb;
-    padding: 2px 10px;
-    display: inline-block;
-    transform: rotate(-15deg);
-    margin: 6px auto;
-    width: auto;
-}
+.footer { margin-top: 5px; text-align: center; font-size: 6.5px; color: #555; }
 </style>
 </head>
 <body>
 <div class="page">
 
 @php
-    $mat = $alumno->matriculas->sortByDesc('periodo')->first();
-    $pago = $mat?->pagoMatricula;
-    $nroTicket = 'TKT-' . date('Y') . '-' . str_pad($alumno->id, 5, '0', STR_PAD_LEFT);
+    $mat        = $alumno->matriculas->sortByDesc('periodo')->first();
+    $pago       = $mat?->pagoMatricula;
+    $nroTicket  = 'TKT-' . date('Y') . '-' . str_pad($alumno->id, 5, '0', STR_PAD_LEFT);
     $totalAnual = $pago ? ($pago->pension_mensual * ($pago->numero_pensiones ?? 10)) : 0;
     $descuento  = ($alumno->tipo_descuento !== 'ninguno') ? $alumno->monto_descuento : 0;
     $totalPagar = $pago ? ($pago->monto_matricula + $totalAnual - $descuento) : 0;
     $estadoPago = strtolower($pago?->estado_pago ?? 'pendiente');
+
+    // Logo — dompdf no ejecuta JS, verificamos la existencia con PHP
+    $logoPath = public_path('images/logo.png');
+    $logoSrc  = file_exists($logoPath)
+        ? 'file:///' . str_replace('\\', '/', $logoPath)
+        : null;
 @endphp
 
 <div class="borde-top"></div>
 
-{{-- ENCABEZADO --}}
+{{-- ENCABEZADO CON LOGO --}}
 <div class="header">
-    <img src="{{ public_path('images/logo.png') }}" class="logo-img" alt="Logo"
-         onerror="this.style.display='none'">
+    @if($logoSrc)
+        <img src="{{ $logoSrc }}" class="logo-img" alt="Logo">
+    @else
+        <div class="logo-fallback">J</div>
+    @endif
     <div class="inst-nombre">Colegio Pre JEDSON</div>
     <div class="inst-sub">Institución Educativa Privada — Arequipa, Perú</div>
     <div class="inst-sub">{{ $alumno->sede?->nombre ?? 'Sede Principal' }}</div>
@@ -244,10 +221,9 @@ body {
 {{-- TÍTULO COMPROBANTE --}}
 <div class="comp-titulo">Comprobante de Matrícula</div>
 <div class="comp-num">
-    N° {{ $nroTicket }} &nbsp;|&nbsp;
-    Período: {{ $mat?->periodo ?? date('Y') }} &nbsp;|&nbsp;
-    Emitido: {{ $fechaEmision }}
+    N° {{ $nroTicket }} &nbsp;|&nbsp; Período: {{ $mat?->periodo ?? date('Y') }}
 </div>
+<div class="comp-num">Emitido: {{ $fechaEmision }}</div>
 
 <div class="borde-dash"></div>
 
@@ -256,8 +232,7 @@ body {
     <div class="alumno-nombre">{{ $alumno->apellidos }}, {{ $alumno->nombres }}</div>
     <div class="alumno-sub">
         DNI: <strong>{{ $alumno->dni }}</strong>
-        &nbsp;&nbsp;
-        {{ $alumno->nivel_academico ?? '' }}
+        &nbsp;&nbsp;{{ $alumno->nivel_academico ?? '' }}
         @if($alumno->grado_seccion) — {{ $alumno->grado_seccion }} @endif
     </div>
     @if($alumno->apoderado)
@@ -286,7 +261,7 @@ body {
     <span class="fila-val">{{ $mat->situacion }}</span>
 </div>
 <div class="fila">
-    <span class="fila-lbl">Modalidad de pago:</span>
+    <span class="fila-lbl">Modalidad pago:</span>
     <span class="fila-val">{{ ucfirst($mat->modalidad_pago) }}</span>
 </div>
 @endif
@@ -306,7 +281,7 @@ body {
     <span class="df-monto">S/ {{ number_format($pago->monto_matricula, 2) }}</span>
 </div>
 <div class="detalle-fila">
-    <span class="df-desc">Pensión mensual x {{ $pago->numero_pensiones ?? 10 }}</span>
+    <span class="df-desc">Pensión x {{ $pago->numero_pensiones ?? 10 }} meses</span>
     <span class="df-monto">S/ {{ number_format($pago->pension_mensual, 2) }} c/u</span>
 </div>
 <div class="detalle-fila" style="border-bottom:none;">
@@ -329,17 +304,24 @@ body {
 
 <div class="borde-dash"></div>
 
-{{-- ESTADO DESTACADO --}}
 <div class="estado-box estado-{{ $estadoPago }}">
     Estado: {{ strtoupper($pago->estado_pago) }}
 </div>
 @endif
 
 {{-- QR --}}
-@if($alumno->qr_code_path && file_exists(storage_path('app/public/' . $alumno->qr_code_path)))
+@php
+    $qrAbsPath = $alumno->qr_code_path
+        ? storage_path('app/public/' . $alumno->qr_code_path)
+        : null;
+    $qrSrc = ($qrAbsPath && file_exists($qrAbsPath))
+        ? 'file:///' . str_replace('\\', '/', $qrAbsPath)
+        : null;
+@endphp
+@if($qrSrc)
 <div class="borde-dash"></div>
 <div class="qr-box">
-    <img src="{{ storage_path('app/public/' . $alumno->qr_code_path) }}" alt="QR">
+    <img src="{{ $qrSrc }}" alt="QR">
     <div class="qr-label">{{ $alumno->dni }} — Colegio Pre JEDSON</div>
 </div>
 @endif
@@ -347,7 +329,7 @@ body {
 {{-- FIRMA --}}
 <div class="borde-dash"></div>
 <div class="firma-box">
-    <div style="height: 30px;"></div>
+    <div style="height: 25px;"></div>
     <div class="firma-linea"></div>
     <div class="firma-txt"><strong>Director(a) / Administración</strong></div>
     <div class="firma-txt">Colegio Pre JEDSON — Arequipa</div>
@@ -357,8 +339,8 @@ body {
 
 {{-- FOOTER --}}
 <div class="footer">
-    <p>Este comprobante acredita la matrícula del estudiante para el período académico indicado.</p>
-    <p>{{ $nroTicket }} &bull; {{ $fechaEmision }} &bull; Colegio Pre JEDSON</p>
+    <p>Comprobante de matrícula para el período académico indicado.</p>
+    <p>{{ $nroTicket }} &bull; {{ $fechaEmision }}</p>
 </div>
 
 </div>

@@ -196,8 +196,9 @@ class AlumnoController extends Controller
     {
         $alumno->load(['sede', 'apoderado', 'matriculas.pagoMatricula']);
         $fechaEmision = $this->parsarFechaEmision($request->get('fecha'));
+        // 80mm × 200mm en puntos (1mm = 2.8346pt) — formato ticketera térmica
         $pdf = Pdf::loadView('pdf.ticket', compact('alumno', 'fechaEmision'))
-            ->setPaper('a5', 'portrait');
+            ->setPaper([0, 0, 226.77, 566.93]);
         return $pdf->stream("ticket_{$alumno->dni}.pdf");
     }
 
