@@ -187,13 +187,14 @@ body {
 <div class="page">
 
 @php
-    $mat        = $alumno->matriculas->sortByDesc('periodo')->first();
-    $pago       = $mat?->pagoMatricula;
-    $nroTicket  = 'TKT-' . date('Y') . '-' . str_pad($alumno->id, 5, '0', STR_PAD_LEFT);
-    $totalAnual = $pago ? ($pago->pension_mensual * ($pago->numero_pensiones ?? 10)) : 0;
-    $descuento  = ($alumno->tipo_descuento !== 'ninguno') ? $alumno->monto_descuento : 0;
-    $totalPagar = $pago ? ($pago->monto_matricula + $totalAnual - $descuento) : 0;
-    $estadoPago = strtolower($pago?->estado_pago ?? 'pendiente');
+    $mat            = $alumno->matriculas->sortByDesc('periodo')->first();
+    $pago           = $mat?->pagoMatricula;
+    $nroTicket      = 'TKT-' . date('Y') . '-' . str_pad($alumno->id, 5, '0', STR_PAD_LEFT);
+    $numPensiones   = $pago?->numero_pensiones ?? 10;
+    $totalPensiones = $pago ? ($pago->pension_mensual * $numPensiones) : 0;
+    $descuento      = ($alumno->tipo_descuento !== 'ninguno') ? $alumno->monto_descuento : 0;
+    // estado_pago solo aplica a la matrícula; las pensiones se cobran mensualmente
+    $estadoMatricula = strtolower($pago?->estado_pago ?? 'pendiente');
 
     // Logo — dompdf no ejecuta JS, verificamos la existencia con PHP
     $logoPath = public_path('images/logo.png');
@@ -269,7 +270,41 @@ body {
 {{-- DETALLE DE PAGO --}}
 @if($pago)
 <div class="borde-dash"></div>
-<div class="sec-titulo">Detalle del Pago</div>
+
+{{-- BLOQUE 1: Matrícula (única vez, al inicio del año) --}}
+<div class="sec-titulo">Pago de Matrícula</div>
+
+<div class="detalle-header">
+    <span class="dh-desc">Concepto</span>
+    <span class="dh-monto">Monto</span>
+</div>
+
+<div class="detalle-fila" style="border-bottom:none;">
+    <span class="df-desc">Matrícula {{ $mat->periodo }}</span>
+    <span class="df-monto">S/ {{ number_format($pago->monto_matricula, 2) }}</span>
+</div>
+
+@if($descuento > 0)
+<div class="detalle-fila" style="border-bottom:none;">
+    <span class="df-desc">Descuento ({{ ucfirst($alumno->tipo_descuento) }})</span>
+    <span class="df-monto">- S/ {{ number_format($descuento, 2) }}</span>
+</div>
+@endif
+
+<div class="total-box" style="margin-bottom:3px;">
+    <span class="total-lbl">Total matrícula</span>
+    <span class="total-val">S/ {{ number_format($pago->monto_matricula - $descuento, 2) }}</span>
+</div>
+
+<div class="estado-box estado-{{ $estadoMatricula }}">
+    Matrícula: {{ strtoupper($pago->estado_pago) }}
+</div>
+
+<div class="borde-dash"></div>
+
+{{-- BLOQUE 2: Pensiones mensuales (cobro independiente cada mes) --}}
+<div class="sec-titulo">Pensiones Mensuales</div>
+<div style="font-size:7px;color:#555;margin-bottom:3px;">Las pensiones se cobran mes a mes, no están incluidas en el pago de matrícula.</div>
 
 <div class="detalle-header">
     <span class="dh-desc">Concepto</span>
@@ -277,36 +312,20 @@ body {
 </div>
 
 <div class="detalle-fila">
-    <span class="df-desc">Matrícula {{ $mat->periodo }}</span>
-    <span class="df-monto">S/ {{ number_format($pago->monto_matricula, 2) }}</span>
-</div>
-<div class="detalle-fila">
-    <span class="df-desc">Pensión x {{ $pago->numero_pensiones ?? 10 }} meses</span>
-    <span class="df-monto">S/ {{ number_format($pago->pension_mensual, 2) }} c/u</span>
+    <span class="df-desc">Pensión mensual</span>
+    <span class="df-monto">S/ {{ number_format($pago->pension_mensual, 2) }}</span>
 </div>
 <div class="detalle-fila" style="border-bottom:none;">
-    <span class="df-desc">Subtotal pensiones</span>
-    <span class="df-monto">S/ {{ number_format($totalAnual, 2) }}</span>
+    <span class="df-desc">N° de meses</span>
+    <span class="df-monto">{{ $numPensiones }}</span>
 </div>
-
-@if($descuento > 0)
-<div class="borde-dash"></div>
-<div class="detalle-fila" style="border-bottom:none;">
-    <span class="df-desc">Descuento ({{ ucfirst($alumno->tipo_descuento) }})</span>
-    <span class="df-monto">- S/ {{ number_format($descuento, 2) }}</span>
-</div>
-@endif
 
 <div class="total-box">
-    <span class="total-lbl">Total a pagar</span>
-    <span class="total-val">S/ {{ number_format($totalPagar, 2) }}</span>
+    <span class="total-lbl">Total anual pens.</span>
+    <span class="total-val">S/ {{ number_format($totalPensiones, 2) }}</span>
 </div>
+<div style="font-size:6.5px;color:#555;text-align:right;margin-top:1px;">(cobro mensual)</div>
 
-<div class="borde-dash"></div>
-
-<div class="estado-box estado-{{ $estadoPago }}">
-    Estado: {{ strtoupper($pago->estado_pago) }}
-</div>
 @endif
 
 {{-- QR --}}
