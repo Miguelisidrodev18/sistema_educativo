@@ -135,18 +135,12 @@
             <div class="relative text-center">
                 <div class="fade-up inline-block mb-5">
                     <div class="floating w-24 h-24 mx-auto mb-1 flex items-center justify-center" style="animation-duration:3.5s">
-                        @php
-                            $loginLogo = collect(['logo.png','logo.svg','ebe.png','logo.jpg','logo.webp'])
-                                ->first(fn($f) => file_exists(public_path("images/{$f}")));
-                        @endphp
-                        @if($loginLogo)
-                        <img src="{{ asset('images/'.$loginLogo) }}" alt="Logo JEDSON"
-                             class="h-24 w-auto object-contain drop-shadow-2xl">
-                        @else
-                        <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl flex items-center justify-center shadow-xl shadow-blue-500/30">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo JEDSON"
+                             class="h-24 w-auto object-contain drop-shadow-2xl"
+                             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                        <div style="display:none" class="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl items-center justify-center shadow-xl shadow-blue-500/30">
                             <i class="fa-solid fa-graduation-cap text-white text-4xl"></i>
                         </div>
-                        @endif
                     </div>
                 </div>
 

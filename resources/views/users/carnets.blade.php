@@ -241,10 +241,7 @@ body{font-family:Arial,Helvetica,sans-serif;background:#e8e8e8;padding:14px;}
 
 @php
 $grupos = array_chunk($users->all(), 2);
-$logoFound = collect(['logo.png','logo.svg','ebe.png','logo.jpg','logo.webp'])
-    ->map(fn($f) => ['file' => $f, 'path' => public_path("images/{$f}")])
-    ->first(fn($x) => file_exists($x['path']));
-$logoFile = $logoFound ? asset("images/{$logoFound['file']}") : null;
+$logoFile = asset('images/logo.png');
 @endphp
 
 @foreach($grupos as $grupo)
@@ -303,14 +300,12 @@ $logoFile = $logoFound ? asset("images/{$logoFound['file']}") : null;
                     <div class="inst-box">
                         <div class="inst-sup">Personal</div>
                         <div class="inst-nom">Colegio Pre<br>JEDSON</div>
-                        @if($logoFile)
-                            <img src="{{ $logoFile }}" class="inst-logo-img" alt="logo">
-                        @else
-                            <svg class="inst-logo-svg" viewBox="0 0 50 50" fill="none">
-                                <circle cx="25" cy="25" r="23" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.55)" stroke-width="1.5"/>
-                                <text x="25" y="33" text-anchor="middle" font-family="Arial" font-weight="900" font-size="24" fill="white">J</text>
-                            </svg>
-                        @endif
+                        <img src="{{ $logoFile }}" class="inst-logo-img" alt="logo"
+                             onerror="this.style.display='none';this.nextSibling.style.display='inline'">
+                        <svg style="display:none;" class="inst-logo-svg" viewBox="0 0 50 50" fill="none">
+                            <circle cx="25" cy="25" r="23" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.55)" stroke-width="1.5"/>
+                            <text x="25" y="33" text-anchor="middle" font-family="Arial" font-weight="900" font-size="24" fill="white">J</text>
+                        </svg>
                     </div>
                 </div>
 

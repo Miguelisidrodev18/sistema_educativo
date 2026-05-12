@@ -15,17 +15,11 @@
 
     <!-- Logo / encabezado -->
     <div class="text-center mb-8">
-        @php
-            $logo = collect(['logo.png','logo.svg','ebe.png','logo.jpg'])
-                ->first(fn($f) => file_exists(public_path("images/{$f}")));
-        @endphp
-        @if($logo)
-            <img src="{{ asset('images/'.$logo) }}" class="h-16 w-auto mx-auto mb-3 drop-shadow" alt="Logo">
-        @else
-            <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-lg">
-                <i class="fa-solid fa-graduation-cap text-white text-2xl"></i>
-            </div>
-        @endif
+        <img src="{{ asset('images/logo.png') }}" class="h-16 w-auto mx-auto mb-3 drop-shadow" alt="Logo"
+             onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div style="display:none" class="w-16 h-16 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-2xl items-center justify-center mx-auto mb-3 shadow-lg">
+            <i class="fa-solid fa-graduation-cap text-white text-2xl"></i>
+        </div>
         <h1 class="text-slate-800 font-black text-2xl">Colegio Pre <span class="text-blue-700">JEDSON</span></h1>
     </div>
 

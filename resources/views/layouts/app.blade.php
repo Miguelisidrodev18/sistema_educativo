@@ -144,17 +144,11 @@
         <!-- Logo -->
         <div class="flex items-center gap-3 px-4 py-4 border-b border-slate-100 min-h-[64px]">
             <div class="shrink-0">
-                @php
-                    $sidebarLogoFile = collect(['logo.png','logo.svg','ebe.png','logo.jpg','logo.webp'])
-                        ->first(fn($f) => file_exists(public_path("images/{$f}")));
-                @endphp
-                @if($sidebarLogoFile)
-                <img src="{{ asset('images/'.$sidebarLogoFile) }}" alt="Logo" class="w-9 h-9 rounded-xl object-contain">
-                @else
-                <div style="display:flex" class="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl items-center justify-center shadow">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-9 h-9 rounded-xl object-contain"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+                <div style="display:none" class="w-9 h-9 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-xl items-center justify-center shadow">
                     <i class="fa-solid fa-graduation-cap text-white text-base"></i>
                 </div>
-                @endif
             </div>
             <div x-show="sidebarOpen" x-transition class="overflow-hidden">
                 <p class="text-slate-500 font-semibold text-xs leading-tight">Colegio Pre</p>

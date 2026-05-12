@@ -277,10 +277,7 @@ body{font-family:Arial,Helvetica,sans-serif;background:#e8e8e8;padding:14px;}
         $fotoUrl  = ($fotoPath && file_exists($fotoPath))
             ? Storage::url($alumno->foto_path)
             : null;
-        $logoUrl = collect(['logo.png','logo.svg','ebe.png','logo.jpg','logo.webp'])
-            ->map(fn($f) => ['file' => $f, 'path' => public_path("images/{$f}")])
-            ->first(fn($x) => file_exists($x['path']));
-        $logoUrl = $logoUrl ? asset("images/{$logoUrl['file']}") : null;
+        $logoUrl = asset('images/logo.png');
     @endphp
 
     @if(!$primero)<hr class="sep">@endif
@@ -311,14 +308,12 @@ body{font-family:Arial,Helvetica,sans-serif;background:#e8e8e8;padding:14px;}
                     <div class="inst-box">
                         <div class="inst-sup">Colegio</div>
                         <div class="inst-nom">Colegio Pre<br>JEDSON</div>
-                        @if($logoUrl)
-                            <img src="{{ $logoUrl }}" class="inst-logo" alt="logo">
-                        @else
-                            <svg class="inst-logo" viewBox="0 0 50 50" fill="none" style="width:16mm;height:16mm;">
-                                <circle cx="25" cy="25" r="23" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.55)" stroke-width="1.5"/>
-                                <text x="25" y="33" text-anchor="middle" font-family="Arial" font-weight="900" font-size="24" fill="white">J</text>
-                            </svg>
-                        @endif
+                        <img src="{{ $logoUrl }}" class="inst-logo" alt="logo"
+                             onerror="this.style.display='none';this.nextSibling.style.display='inline'">
+                        <svg style="display:none;width:16mm;height:16mm;" class="inst-logo" viewBox="0 0 50 50" fill="none">
+                            <circle cx="25" cy="25" r="23" fill="rgba(255,255,255,0.2)" stroke="rgba(255,255,255,0.55)" stroke-width="1.5"/>
+                            <text x="25" y="33" text-anchor="middle" font-family="Arial" font-weight="900" font-size="24" fill="white">J</text>
+                        </svg>
                     </div>
                 </div>
 
