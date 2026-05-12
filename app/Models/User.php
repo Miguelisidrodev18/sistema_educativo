@@ -16,6 +16,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name', 'dni', 'email', 'password',
         'user_type', 'sede_id', 'activo', 'qr_code_path',
+        'alumno_id', 'must_change_password',
     ];
 
     protected $hidden = [
@@ -25,9 +26,10 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password'          => 'hashed',
-            'activo'            => 'boolean',
+            'email_verified_at'    => 'datetime',
+            'password'             => 'hashed',
+            'activo'               => 'boolean',
+            'must_change_password' => 'boolean',
         ];
     }
 
@@ -44,6 +46,16 @@ class User extends Authenticatable
     public function asignaciones(): HasMany
     {
         return $this->hasMany(DocenteAsignacion::class)->with('sede')->orderBy('nivel')->orderBy('grado_seccion');
+    }
+
+    public function alumno(): BelongsTo
+    {
+        return $this->belongsTo(Alumno::class);
+    }
+
+    public function isEstudiante(): bool
+    {
+        return $this->user_type === 'estudiante';
     }
 
     public function isAdmin(): bool

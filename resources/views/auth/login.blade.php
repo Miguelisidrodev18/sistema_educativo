@@ -39,6 +39,7 @@
 .card-pop-d1{animation:cardPop 0.45s 0.08s ease both}
 .card-pop-d2{animation:cardPop 0.45s 0.16s ease both}
 .card-pop-d3{animation:cardPop 0.45s 0.24s ease both}
+.card-pop-d3{animation:cardPop 0.45s 0.24s ease both}
 .btn-shimmer{background-size:200% 100%;animation:shimmer 3s linear infinite;background-image:linear-gradient(90deg,#1e40af,#3b82f6,#2563eb,#3b82f6,#1e40af)}
 
 /* ── Tarjetas de rol ── */
@@ -106,9 +107,10 @@
         loading: false,
         showPass: false,
         roles: [
-            { key: 'administrador', label: 'Administrador', icon: 'fa-shield-halved',   color: '#2563eb', bg: '#eff6ff', desc: 'Gestión total del sistema' },
-            { key: 'auxiliar',      label: 'Auxiliar',       icon: 'fa-clipboard-list', color: '#0d9488', bg: '#f0fdfa', desc: 'Apoyo administrativo'      },
-            { key: 'docente',       label: 'Docente',         icon: 'fa-chalkboard-user',color: '#7c3aed', bg: '#f5f3ff', desc: 'Asistencia y alumnos'      }
+            { key: 'administrador', label: 'Administrador', icon: 'fa-shield-halved',    color: '#2563eb', bg: '#eff6ff', desc: 'Gestión total del sistema' },
+            { key: 'auxiliar',      label: 'Auxiliar',      icon: 'fa-clipboard-list',  color: '#0d9488', bg: '#f0fdfa', desc: 'Apoyo administrativo'      },
+            { key: 'docente',       label: 'Docente',        icon: 'fa-chalkboard-user', color: '#7c3aed', bg: '#f5f3ff', desc: 'Asistencia y alumnos'      },
+            { key: 'estudiante',    label: 'Alumno',         icon: 'fa-graduation-cap',  color: '#d97706', bg: '#fffbeb', desc: 'Mis pagos y asistencias'   }
         ],
         get current() { return this.roles.find(r => r.key === this.selectedRole) }
      }">
@@ -228,7 +230,7 @@
                 </div>
 
                 <!-- Cards de rol (3 tarjetas en fila, o 2+1 centrado) -->
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <!-- Administrador -->
                     <button type="button"
                             @click="selectedRole = 'administrador'; step = 'login'"
@@ -270,6 +272,20 @@
                             <p class="text-slate-400 text-xs mt-0.5">Asistencia y alumnos</p>
                         </div>
                     </button>
+
+                    <!-- Alumno -->
+                    <button type="button"
+                            @click="selectedRole = 'estudiante'; step = 'login'"
+                            class="card-pop-d3 role-card rounded-2xl p-6 flex flex-col items-center gap-3 text-center">
+                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-md"
+                             style="background:#fffbeb">
+                            <i class="fa-solid fa-graduation-cap text-2xl" style="color:#d97706"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 text-sm">Alumno</p>
+                            <p class="text-slate-400 text-xs mt-0.5">Mis pagos y asistencias</p>
+                        </div>
+                    </button>
                 </div>
 
                 <p class="mt-8 text-center text-slate-400 text-xs">
@@ -306,7 +322,15 @@
                     <p class="text-slate-500 text-sm mt-1">Ingresa tus credenciales para acceder</p>
                 </div>
 
-                <!-- Errores -->
+                <!-- Sesión expirada -->
+                @if(session('error'))
+                    <div class="mb-5 flex items-start gap-2.5 bg-amber-50 border border-amber-200 rounded-xl px-4 py-3 fade-up">
+                        <i class="fa-solid fa-clock text-amber-500 mt-0.5 shrink-0 text-sm"></i>
+                        <p class="text-xs text-amber-700">{{ session('error') }}</p>
+                    </div>
+                @endif
+
+                <!-- Errores de validación -->
                 @if($errors->any())
                     <div class="mb-5 flex items-start gap-2.5 bg-red-50 border border-red-200 rounded-xl px-4 py-3 fade-up">
                         <i class="fa-solid fa-circle-exclamation text-red-500 mt-0.5 shrink-0 text-sm"></i>

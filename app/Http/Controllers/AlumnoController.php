@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Alumno;
 use App\Models\Apoderado;
 use App\Models\Sede;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -15,7 +17,7 @@ class AlumnoController extends Controller
     public function index(Request $request)
     {
         $sedeId = $request->sede_id ?: session('sede_id');
-        $query  = Alumno::with(['sede', 'apoderado']);
+        $query  = Alumno::with(['sede', 'apoderado', 'user']);
 
         if ($sedeId) {
             $query->where('sede_id', $sedeId);
@@ -232,6 +234,30 @@ class AlumnoController extends Controller
             ->get();
 
         return view('alumnos.carnets', compact('alumnos'));
+    }
+
+    public function crearCuenta(Alumno $alumno)
+    {
+        if ($alumno->user) {
+            return back()->with('info', "Este alumno ya tiene cuenta: {$alumno->user->email}");
+        }
+
+        $email = $alumno->dni . '@estudiante.jedson.edu.pe';
+
+        $user = User::create([
+            'name'                 => $alumno->nombres . ' ' . $alumno->apellidos,
+            'dni'                  => $alumno->dni,
+            'email'                => $email,
+            'password'             => Hash::make($alumno->dni),
+            'user_type'            => 'estudiante',
+            'sede_id'              => $alumno->sede_id,
+            'alumno_id'            => $alumno->id,
+            'activo'               => true,
+            'must_change_password' => true,
+        ]);
+        $user->assignRole('estudiante');
+
+        return back()->with('success', "Cuenta creada. El alumno inicia sesión con DNI y contraseña: {$alumno->dni}");
     }
 
     public function generarQrMasivo()

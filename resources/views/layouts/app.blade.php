@@ -162,9 +162,11 @@
             </div>
         </div>
 
-        <!-- Selector de sede -->
-        @php $todasSedes = \App\Models\Sede::where('activo',true)->orderBy('nombre')->get(); @endphp
-        @if($todasSedes->count() > 0)
+        @php $esEstudiante = auth()->user()->isEstudiante(); @endphp
+
+        <!-- Selector de sede (solo no-estudiantes) -->
+        @php $todasSedes = $esEstudiante ? collect() : \App\Models\Sede::where('activo',true)->orderBy('nombre')->get(); @endphp
+        @if(!$esEstudiante && $todasSedes->count() > 0)
         <div class="px-3 py-2 border-b border-slate-100" x-show="sidebarOpen" x-transition>
             @php $sedeActualNombre = \App\Models\Sede::find(session('sede_id'))?->nombre; @endphp
             <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Sede activa</p>
@@ -228,6 +230,44 @@
         <!-- Navigation -->
         <nav class="flex-1 overflow-y-auto px-2 py-3 space-y-0.5">
 
+        @if($esEstudiante)
+            {{-- ══ MENÚ ESTUDIANTE ══ --}}
+            <div x-show="sidebarOpen" x-transition><p class="nav-section">Mi Portal</p></div>
+
+            <a href="{{ route('estudiante.dashboard') }}"
+               class="nav-link {{ request()->routeIs('estudiante.dashboard') ? 'active' : '' }}">
+                <i class="fa-solid fa-house w-5 text-center shrink-0 text-slate-400"></i>
+                <span x-show="sidebarOpen" x-transition class="truncate">Inicio</span>
+            </a>
+
+            <a href="{{ route('estudiante.perfil') }}"
+               class="nav-link {{ request()->routeIs('estudiante.perfil*') ? 'active' : '' }}">
+                <i class="fa-solid fa-user-circle w-5 text-center shrink-0 text-slate-400"></i>
+                <span x-show="sidebarOpen" x-transition class="truncate">Mi Perfil</span>
+            </a>
+
+            <div x-show="sidebarOpen" x-transition><p class="nav-section mt-2">Académico</p></div>
+
+            <a href="{{ route('estudiante.matricula') }}"
+               class="nav-link {{ request()->routeIs('estudiante.matricula') ? 'active' : '' }}">
+                <i class="fa-solid fa-file-signature w-5 text-center shrink-0 text-slate-400"></i>
+                <span x-show="sidebarOpen" x-transition class="truncate">Mi Matrícula</span>
+            </a>
+
+            <a href="{{ route('estudiante.pagos') }}"
+               class="nav-link {{ request()->routeIs('estudiante.pagos') ? 'active' : '' }}">
+                <i class="fa-solid fa-money-bill-wave w-5 text-center shrink-0 text-slate-400"></i>
+                <span x-show="sidebarOpen" x-transition class="truncate">Mis Pagos</span>
+            </a>
+
+            <a href="{{ route('estudiante.asistencias') }}"
+               class="nav-link {{ request()->routeIs('estudiante.asistencias') ? 'active' : '' }}">
+                <i class="fa-solid fa-clipboard-check w-5 text-center shrink-0 text-slate-400"></i>
+                <span x-show="sidebarOpen" x-transition class="truncate">Asistencias</span>
+            </a>
+
+        @else
+            {{-- ══ MENÚ PERSONAL (admin / auxiliar / docente) ══ --}}
             <div x-show="sidebarOpen" x-transition><p class="nav-section">Principal</p></div>
 
             <a href="{{ route('dashboard') }}"
@@ -299,6 +339,7 @@
                 <span x-show="sidebarOpen" x-transition class="truncate">Usuarios</span>
             </a>
             @endif
+        @endif
 
         </nav>
 

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AlumnoController;
+use App\Http\Controllers\EstudianteController;
 use App\Http\Controllers\MatriculaController;
 use App\Http\Controllers\PagoController;
 use App\Http\Controllers\AsistenciaController;
@@ -17,6 +18,12 @@ Route::get('/', fn() => view('landing'))->name('landing');
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+// Cambio de contraseña (requiere auth, exento del middleware password)
+Route::middleware('auth')->group(function () {
+    Route::get('/cambiar-password',  [EstudianteController::class, 'showCambiarPassword'])->name('password.change');
+    Route::post('/cambiar-password', [EstudianteController::class, 'cambiarPassword'])->name('password.change.update');
+});
 
 // Authenticated routes
 Route::middleware('auth')->group(function () {
@@ -66,9 +73,20 @@ Route::middleware('auth')->group(function () {
         return view('dashboard', compact('stats', 'sedes', 'sedeActiva', 'distribucion'));
     })->name('dashboard');
 
+    // Portal estudiante
+    Route::prefix('mi-portal')->name('estudiante.')->group(function () {
+        Route::get('/',            [EstudianteController::class, 'dashboard'])->name('dashboard');
+        Route::get('/perfil',      [EstudianteController::class, 'perfil'])->name('perfil');
+        Route::post('/perfil',     [EstudianteController::class, 'actualizarPerfil'])->name('perfil.update');
+        Route::get('/pagos',       [EstudianteController::class, 'pagos'])->name('pagos');
+        Route::get('/asistencias', [EstudianteController::class, 'asistencias'])->name('asistencias');
+        Route::get('/matricula',   [EstudianteController::class, 'matricula'])->name('matricula');
+    });
+
     // Alumnos
-    Route::get('/alumnos/carnets',    [AlumnoController::class, 'carnets'])->name('alumnos.carnets');
-    Route::post('/alumnos/generar-qr',[AlumnoController::class, 'generarQrMasivo'])->name('alumnos.generar-qr');
+    Route::get('/alumnos/carnets',               [AlumnoController::class, 'carnets'])->name('alumnos.carnets');
+    Route::post('/alumnos/generar-qr',           [AlumnoController::class, 'generarQrMasivo'])->name('alumnos.generar-qr');
+    Route::post('/alumnos/{alumno}/crear-cuenta',[AlumnoController::class, 'crearCuenta'])->name('alumnos.crear-cuenta');
     Route::resource('alumnos', AlumnoController::class);
     Route::get('/alumnos/{alumno}/constancia',     [AlumnoController::class, 'constanciaHtml'])->name('alumnos.constancia');
     Route::get('/alumnos/{alumno}/ticket-pdf',    [AlumnoController::class, 'ticketPdf'])->name('alumnos.ticket-pdf');

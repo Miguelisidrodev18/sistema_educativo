@@ -54,6 +54,16 @@ class AuthController extends Controller
         Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
 
+        // Forzar cambio de contraseña en primer login
+        if ($user->must_change_password) {
+            return redirect()->route('password.change');
+        }
+
+        // Estudiantes van a su portal propio
+        if ($user->isEstudiante()) {
+            return redirect()->route('estudiante.dashboard');
+        }
+
         return redirect()->intended(route('dashboard'));
     }
 

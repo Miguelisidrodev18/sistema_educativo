@@ -368,6 +368,17 @@
                                         class="p-1.5 text-slate-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition">
                                     <i class="fa-solid fa-receipt text-sm"></i>
                                 </button>
+                                {{-- Crear cuenta alumno --}}
+                                <form action="{{ route('alumnos.crear-cuenta', $alumno) }}" method="POST"
+                                      onsubmit="return confirm('¿Crear cuenta de acceso para {{ addslashes($alumno->nombres) }}? La contraseña inicial será su DNI.')">
+                                    @csrf
+                                    <button type="submit"
+                                            title="{{ $alumno->user ? 'Ya tiene cuenta' : 'Crear cuenta de acceso' }}"
+                                            class="p-1.5 rounded-lg transition
+                                                {{ $alumno->user ? 'text-green-500 bg-green-50 cursor-default' : 'text-slate-400 hover:text-amber-600 hover:bg-amber-50' }}">
+                                        <i class="fa-solid {{ $alumno->user ? 'fa-user-check' : 'fa-user-plus' }} text-sm"></i>
+                                    </button>
+                                </form>
                                 <form action="{{ route('alumnos.destroy', $alumno) }}" method="POST"
                                       onsubmit="return confirm('¿Eliminar este alumno? Esta acción no se puede deshacer.')">
                                     @csrf @method('DELETE')
