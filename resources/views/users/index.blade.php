@@ -111,6 +111,12 @@
                     <!-- Acciones -->
                     <td class="px-5 py-4 text-center">
                         <div class="flex items-center justify-center gap-1.5">
+                            {{-- Ver perfil / asignaciones --}}
+                            <a href="{{ route('users.show', $user) }}"
+                               title="Ver perfil y asignaciones"
+                               class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 hover:bg-blue-100 text-blue-700 transition">
+                                <i class="fa-solid fa-eye"></i> Ver
+                            </a>
                             {{-- QR --}}
                             <form action="{{ route('users.generar-qr', $user) }}" method="POST">
                                 @csrf
@@ -121,14 +127,6 @@
                                     {{ $user->qr_code_path ? 'QR ✓' : 'QR' }}
                                 </button>
                             </form>
-                            {{-- Ver QR --}}
-                            @if($user->qr_code_path && Storage::disk('public')->exists($user->qr_code_path))
-                                <a href="{{ Storage::url($user->qr_code_path) }}" target="_blank"
-                                   title="Ver QR"
-                                   class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 transition">
-                                    <i class="fa-solid fa-eye"></i>
-                                </a>
-                            @endif
                             {{-- Toggle activo --}}
                             @if($user->id !== auth()->id())
                             <form action="{{ route('users.toggle', $user) }}" method="POST">
