@@ -11,12 +11,13 @@ body {
     color: #000;
     background: #fff;
     width: 100%;
+    padding: 5mm 6mm;
 }
 
 /* ── Página ticketera 80mm ancho ── */
 @page {
     size: 80mm 200mm;
-    margin: 4mm 5mm;
+    margin: 0;
 }
 
 .page { width: 100%; background: #fff; }
