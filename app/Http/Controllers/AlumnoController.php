@@ -14,7 +14,12 @@ class AlumnoController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Alumno::with(['sede', 'apoderado']);
+        $sedeId = $request->sede_id ?: session('sede_id');
+        $query  = Alumno::with(['sede', 'apoderado']);
+
+        if ($sedeId) {
+            $query->where('sede_id', $sedeId);
+        }
 
         if ($request->filled('buscar')) {
             $buscar = $request->buscar;
@@ -25,12 +30,12 @@ class AlumnoController extends Controller
             });
         }
 
-        if ($request->filled('sede_id')) {
-            $query->where('sede_id', $request->sede_id);
-        }
-
         if ($request->filled('nivel')) {
             $query->where('nivel_academico', $request->nivel);
+        }
+
+        if ($request->filled('grado_seccion')) {
+            $query->where('grado_seccion', $request->grado_seccion);
         }
 
         if ($request->filled('activo')) {
@@ -40,7 +45,16 @@ class AlumnoController extends Controller
         $alumnos = $query->orderBy('apellidos')->paginate(20)->withQueryString();
         $sedes   = Sede::where('activo', true)->get();
 
-        return view('alumnos.index', compact('alumnos', 'sedes'));
+        // Conteo de alumnos por nivel y grado (respetando el filtro de sede)
+        $gradosQ = Alumno::where('activo', true)->whereNotNull('nivel_academico');
+        if ($sedeId) $gradosQ->where('sede_id', $sedeId);
+        $gradoConteos = $gradosQ
+            ->selectRaw('nivel_academico, grado_seccion, COUNT(*) as total')
+            ->groupBy('nivel_academico', 'grado_seccion')
+            ->get()
+            ->groupBy('nivel_academico');
+
+        return view('alumnos.index', compact('alumnos', 'sedes', 'sedeId', 'gradoConteos'));
     }
 
     public function create()
@@ -152,12 +166,48 @@ class AlumnoController extends Controller
             ->with('success', 'Alumno eliminado correctamente.');
     }
 
-    public function ticketPdf(Alumno $alumno)
+    public function constanciaHtml(Alumno $alumno, Request $request)
     {
         $alumno->load(['sede', 'apoderado', 'matriculas.pagoMatricula']);
-        $pdf = Pdf::loadView('pdf.ticket', compact('alumno'))
+
+        $fechaEmision = $this->parsarFechaEmision($request->get('fecha'));
+
+        $telLimpio = preg_replace('/\D/', '', $alumno->apoderado?->telefono ?? '');
+        if (strlen($telLimpio) === 9) $telLimpio = '51' . $telLimpio;
+        $waMsg = "✅ *CONSTANCIA DE MATRÍCULA*\n"
+               . "━━━━━━━━━━━━━━━━━\n"
+               . "📋 *Alumno:* " . strtoupper($alumno->apellidos . ', ' . $alumno->nombres) . "\n"
+               . "🪪 *DNI:* " . $alumno->dni . "\n"
+               . "📚 *Nivel:* " . ($alumno->nivel_academico ?? '—') . "\n"
+               . "🎓 *Grado:* " . ($alumno->grado_seccion ?? '—') . "\n"
+               . "📅 *Periodo:* " . date('Y') . "\n"
+               . "👤 *Apoderado:* " . strtoupper($alumno->apoderado?->nombre_completo ?? '—') . "\n"
+               . "📆 *Fecha:* " . $fechaEmision . "\n"
+               . "━━━━━━━━━━━━━━━━━\n"
+               . "Colegio Pre JEDSON - Arequipa";
+        $waUrl = $telLimpio ? 'https://wa.me/' . $telLimpio . '?text=' . urlencode($waMsg) : '';
+
+        return view('alumnos.constancia', compact('alumno', 'fechaEmision', 'waUrl'));
+    }
+
+    public function ticketPdf(Alumno $alumno, Request $request)
+    {
+        $alumno->load(['sede', 'apoderado', 'matriculas.pagoMatricula']);
+        $fechaEmision = $this->parsarFechaEmision($request->get('fecha'));
+        $pdf = Pdf::loadView('pdf.ticket', compact('alumno', 'fechaEmision'))
             ->setPaper('a5', 'portrait');
         return $pdf->stream("ticket_{$alumno->dni}.pdf");
+    }
+
+    private function parsarFechaEmision(?string $fecha): string
+    {
+        $meses = ['','enero','febrero','marzo','abril','mayo','junio',
+                  'julio','agosto','septiembre','octubre','noviembre','diciembre'];
+        if ($fecha && preg_match('/^\d{4}-\d{2}-\d{2}$/', $fecha)) {
+            $d = \Carbon\Carbon::parse($fecha);
+            return $d->day . ' de ' . $meses[$d->month] . ' de ' . $d->year;
+        }
+        return now()->day . ' de ' . $meses[now()->month] . ' de ' . now()->year;
     }
 
     public function constanciaPdf(Alumno $alumno)
@@ -168,20 +218,48 @@ class AlumnoController extends Controller
         return $pdf->stream("constancia_{$alumno->dni}.pdf");
     }
 
+    public function carnets(Request $request)
+    {
+        $ids = array_filter(array_map('intval', explode(',', $request->get('ids', ''))));
+
+        if (empty($ids)) {
+            abort(400, 'No se especificaron alumnos.');
+        }
+
+        $alumnos = Alumno::with(['sede'])
+            ->whereIn('id', $ids)
+            ->orderBy('apellidos')
+            ->get();
+
+        return view('alumnos.carnets', compact('alumnos'));
+    }
+
+    public function generarQrMasivo()
+    {
+        $sinQr = Alumno::whereNull('qr_code_path')->orWhere('qr_code_path', '')->get();
+        $count = 0;
+        foreach ($sinQr as $alumno) {
+            $this->generarQR($alumno);
+            $count++;
+        }
+        return back()->with('success', "QR generados para {$count} alumno(s).");
+    }
+
     private function generarQR(Alumno $alumno): void
     {
         try {
-            $qrContent = route('alumnos.show', $alumno->id);
+            // Formato unificado: ALU:{id} — compatible con lector de asistencias
+            $qrContent = "ALU:{$alumno->id}";
             $qrDir     = storage_path('app/public/qr_codes');
             if (!is_dir($qrDir)) {
                 mkdir($qrDir, 0755, true);
             }
-            $filename = "qr_{$alumno->dni}.svg";
+            $filename = "qr_alu_{$alumno->id}.svg";
             $path     = "{$qrDir}/{$filename}";
             QrCode::format('svg')->size(200)->generate($qrContent, $path);
             $alumno->update(['qr_code_path' => "qr_codes/{$filename}"]);
         } catch (\Exception $e) {
-            // QR generation failure is non-critical
+            // non-critical
         }
     }
 }

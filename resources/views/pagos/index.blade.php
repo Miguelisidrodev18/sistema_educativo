@@ -140,68 +140,105 @@
     </form>
 </div>
 
-<!-- Table: Alumnos with month payment status -->
-<div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+<!-- Meses activos info -->
+<div class="flex items-center gap-2 mb-3 flex-wrap">
+    <span class="text-xs text-slate-400 font-semibold uppercase tracking-wide">Meses activos:</span>
+    @foreach($mesesActivos as $m)
+        <span class="text-[10px] bg-teal-100 text-teal-700 font-bold px-2 py-0.5 rounded-full border border-teal-200">{{ substr($m,0,3) }}</span>
+    @endforeach
+    <a href="{{ route('configuracion.index') }}" class="text-[11px] text-blue-600 hover:underline ml-1">
+        <i class="fa-solid fa-gear text-[9px] mr-0.5"></i>Configurar
+    </a>
+</div>
+
+<!-- Table: Alumnos with progress bar + month status -->
+<div class="bg-white rounded-2xl shadow-sm border border-slate-200/80 overflow-hidden">
     <div class="overflow-x-auto">
         <table class="w-full text-xs">
-            <thead class="bg-slate-50 border-b border-slate-200">
+            <thead class="bg-slate-50/80 border-b border-slate-100">
                 <tr>
-                    <th class="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Alumno</th>
-                    <th class="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Nivel</th>
-                    @foreach($meses as $mes)
-                        <th class="text-center px-2 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide min-w-[52px]">
+                    <th class="text-left px-4 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wide min-w-45">Alumno</th>
+                    <th class="text-left px-4 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wide w-48">Progreso</th>
+                    @foreach($mesesActivos as $mes)
+                        <th class="text-center px-1.5 py-3 text-[10px] font-bold text-slate-400 uppercase min-w-9">
                             {{ substr($mes, 0, 3) }}
                         </th>
                     @endforeach
-                    <th class="text-center px-4 py-3 text-xs font-semibold text-slate-500 uppercase tracking-wide">Acciones</th>
+                    <th class="text-center px-4 py-3 text-xs font-semibold text-slate-400 uppercase tracking-wide">Acción</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-slate-100">
+            <tbody class="divide-y divide-slate-50">
                 @forelse($alumnos as $alumno)
                     @php
-                        $pagosAlumno = $alumno->pagosPension->keyBy('mes_pagado');
+                        $pagosAlumno  = $alumno->pagosPension->keyBy('mes_pagado');
+                        $mesesPagados = $pagosAlumno->count();
+                        $pct          = $totalMeses > 0 ? round(($mesesPagados / $totalMeses) * 100) : 0;
+                        $colorBar     = $pct >= 100 ? 'bg-green-500' : ($pct >= 50 ? 'bg-blue-500' : ($pct > 0 ? 'bg-yellow-400' : 'bg-slate-200'));
+                        $colorText    = $pct >= 100 ? 'text-green-700' : ($pct >= 50 ? 'text-blue-700' : ($pct > 0 ? 'text-yellow-700' : 'text-slate-400'));
                     @endphp
-                    <tr class="hover:bg-slate-50 transition">
-                        <td class="px-4 py-3 min-w-[180px]">
-                            <p class="font-semibold text-slate-800 text-xs">{{ $alumno->apellidos }}, {{ $alumno->nombres }}</p>
-                            <p class="text-slate-400 text-xs font-mono">{{ $alumno->dni }}</p>
-                        </td>
+                    <tr class="hover:bg-blue-50/20 transition group">
                         <td class="px-4 py-3">
-                            @if($alumno->nivel_academico)
-                                <span class="text-xs px-2 py-0.5 rounded-full
-                                    {{ $alumno->nivel_academico === 'INICIAL' ? 'bg-pink-100 text-pink-700' : ($alumno->nivel_academico === 'PRIMARIA' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700') }}">
-                                    {{ substr($alumno->nivel_academico, 0, 3) }}
+                            <p class="font-semibold text-slate-800 leading-tight">{{ $alumno->apellidos }}, {{ $alumno->nombres }}</p>
+                            <div class="flex items-center gap-1.5 mt-0.5">
+                                <span class="font-mono text-slate-400 text-[10px]">{{ $alumno->dni }}</span>
+                                @if($alumno->nivel_academico)
+                                    <span class="text-[10px] px-1.5 py-0.5 rounded-full font-semibold
+                                        {{ $alumno->nivel_academico === 'INICIAL' ? 'bg-pink-100 text-pink-700' : ($alumno->nivel_academico === 'PRIMARIA' ? 'bg-blue-100 text-blue-700' : 'bg-purple-100 text-purple-700') }}">
+                                        {{ substr($alumno->nivel_academico,0,3) }}
+                                    </span>
+                                @endif
+                            </div>
+                        </td>
+
+                        {{-- ── BARRA DE PROGRESO ── --}}
+                        <td class="px-4 py-3">
+                            <div class="flex items-center gap-2">
+                                <div class="flex-1 bg-slate-100 rounded-full h-2.5 overflow-hidden">
+                                    <div class="{{ $colorBar }} h-full rounded-full transition-all"
+                                         style="width: {{ $pct }}%"></div>
+                                </div>
+                                <span class="text-[11px] font-bold {{ $colorText }} shrink-0 w-12 text-right">
+                                    {{ $mesesPagados }}/{{ $totalMeses }}
                                 </span>
+                            </div>
+                            @if($mesesPagados > 0)
+                            <p class="text-[10px] text-slate-400 mt-0.5">
+                                S/ {{ number_format($pagosAlumno->sum('monto'), 2) }} recaudado
+                            </p>
                             @endif
                         </td>
-                        @foreach($meses as $mes)
+
+                        {{-- ── CHIPS DE MESES ── --}}
+                        @foreach($mesesActivos as $mes)
                             <td class="px-1 py-3 text-center">
                                 @if(isset($pagosAlumno[$mes]))
-                                    <span title="{{ $mes }} - S/ {{ number_format($pagosAlumno[$mes]->monto, 2) }}"
-                                          class="inline-flex w-7 h-7 items-center justify-center rounded-full bg-green-100 text-green-700 cursor-default">
-                                        <i class="fa-solid fa-check text-xs"></i>
+                                    <span title="S/ {{ number_format($pagosAlumno[$mes]->monto, 2) }}"
+                                          class="inline-flex w-6 h-6 items-center justify-center rounded-full bg-green-100 text-green-600">
+                                        <i class="fa-solid fa-check" style="font-size:8px"></i>
                                     </span>
                                 @else
-                                    <span title="{{ $mes }} - Pendiente"
-                                          class="inline-flex w-7 h-7 items-center justify-center rounded-full bg-slate-100 text-slate-400 cursor-default">
-                                        <i class="fa-solid fa-minus text-xs"></i>
+                                    <span class="inline-flex w-6 h-6 items-center justify-center rounded-full bg-slate-100 text-slate-300">
+                                        <i class="fa-solid fa-minus" style="font-size:8px"></i>
                                     </span>
                                 @endif
                             </td>
                         @endforeach
+
                         <td class="px-4 py-3 text-center">
-                            <a href="{{ route('pagos.alumno', $alumno) }}"
-                               class="inline-flex items-center gap-1 bg-blue-700 hover:bg-blue-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition">
-                                <i class="fa-solid fa-hand-holding-dollar"></i> Gestionar
+                            <a href="{{ route('pagos.alumno', $alumno) }}?anio={{ $anio }}"
+                               class="inline-flex items-center gap-1 bg-blue-700 hover:bg-blue-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition opacity-80 group-hover:opacity-100">
+                                <i class="fa-solid fa-hand-holding-dollar"></i>
                             </a>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="{{ count($meses) + 3 }}" class="px-4 py-12 text-center">
+                        <td colspan="{{ count($mesesActivos) + 3 }}" class="px-4 py-16 text-center">
                             <div class="flex flex-col items-center gap-3">
-                                <i class="fa-solid fa-money-bill-slash text-4xl text-slate-300"></i>
-                                <p class="text-slate-500 font-medium">No se encontraron alumnos</p>
+                                <div class="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center">
+                                    <i class="fa-solid fa-money-bill-slash text-3xl text-slate-300"></i>
+                                </div>
+                                <p class="text-slate-500 font-semibold">No se encontraron alumnos</p>
                             </div>
                         </td>
                     </tr>
@@ -210,7 +247,8 @@
         </table>
     </div>
     @if($alumnos->hasPages())
-        <div class="px-4 py-3 border-t border-slate-200">
+        <div class="px-4 py-3 border-t border-slate-100 flex items-center justify-between">
+            <p class="text-xs text-slate-400">{{ $alumnos->firstItem() }}–{{ $alumnos->lastItem() }} de {{ $alumnos->total() }}</p>
             {{ $alumnos->links() }}
         </div>
     @endif

@@ -13,12 +13,13 @@ class AsistenciaController extends Controller
 {
     public function index(Request $request)
     {
-        $fecha = $request->get('fecha', today()->toDateString());
-        $query = Alumno::with(['sede', 'asistencias' => fn($q) => $q->whereDate('fecha', $fecha)])
+        $sedeId = $request->sede_id ?: session('sede_id');
+        $fecha  = $request->get('fecha', today()->toDateString());
+        $query  = Alumno::with(['sede', 'asistencias' => fn($q) => $q->whereDate('fecha', $fecha)])
             ->where('activo', true);
 
-        if ($request->filled('sede_id')) {
-            $query->where('sede_id', $request->sede_id);
+        if ($sedeId) {
+            $query->where('sede_id', $sedeId);
         }
 
         if ($request->filled('nivel')) {
@@ -162,21 +163,41 @@ class AsistenciaController extends Controller
 
     public function registrarQr(Request $request)
     {
-        $request->validate([
-            'alumno_id' => 'required|exists:alumnos,id',
-        ]);
+        $tipo = $request->tipo ?? 'ALU';
+        $id   = (int) $request->id;
 
-        $alumno = Alumno::find($request->alumno_id);
+        if ($tipo === 'USR') {
+            $user = User::find($id);
+            if (!$user) {
+                return response()->json(['success' => false, 'mensaje' => 'Docente/Auxiliar no encontrado']);
+            }
+            AsistenciaDocente::updateOrCreate(
+                ['user_id' => $user->id, 'fecha' => today()],
+                ['estado' => 'PRESENTE', 'hora_registro' => now()->toTimeString(), 'sede_id' => $user->sede_id]
+            );
+            return response()->json([
+                'success' => true,
+                'tipo'    => 'docente',
+                'mensaje' => "✓ {$user->name}",
+                'detalle' => ucfirst($user->user_type) . ' — ' . now()->format('H:i:s'),
+                'hora'    => now()->format('H:i:s'),
+            ]);
+        }
 
+        // ALU (alumno)
+        $alumno = Alumno::find($id);
+        if (!$alumno) {
+            return response()->json(['success' => false, 'mensaje' => 'Alumno no encontrado (ID: '.$id.')']);
+        }
         Asistencia::updateOrCreate(
             ['alumno_id' => $alumno->id, 'fecha' => today()],
             ['estado' => 'PRESENTE', 'hora_registro' => now()->toTimeString(), 'sede_id' => $alumno->sede_id]
         );
-
         return response()->json([
             'success' => true,
-            'mensaje' => "Asistencia registrada para {$alumno->nombres} {$alumno->apellidos}",
-            'alumno'  => $alumno->nombre_completo,
+            'tipo'    => 'alumno',
+            'mensaje' => "✓ {$alumno->apellidos}, {$alumno->nombres}",
+            'detalle' => ($alumno->nivel_academico ?? '') . ' ' . ($alumno->grado_seccion ?? '') . ' — ' . now()->format('H:i:s'),
             'hora'    => now()->format('H:i:s'),
         ]);
     }

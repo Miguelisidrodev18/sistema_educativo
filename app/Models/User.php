@@ -7,6 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class User extends Authenticatable
 {
@@ -14,7 +15,7 @@ class User extends Authenticatable
 
     protected $fillable = [
         'name', 'dni', 'email', 'password',
-        'user_type', 'sede_id', 'activo',
+        'user_type', 'sede_id', 'activo', 'qr_code_path',
     ];
 
     protected $hidden = [
@@ -38,6 +39,11 @@ class User extends Authenticatable
     public function asistenciasDocente(): HasMany
     {
         return $this->hasMany(AsistenciaDocente::class);
+    }
+
+    public function asignaciones(): HasMany
+    {
+        return $this->hasMany(DocenteAsignacion::class)->with('sede')->orderBy('nivel')->orderBy('grado_seccion');
     }
 
     public function isAdmin(): bool

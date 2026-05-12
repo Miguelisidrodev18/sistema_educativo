@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ConfiguracionColegio;
 use App\Models\Alumno;
 use App\Models\PagoPension;
 use App\Models\Sede;
@@ -27,25 +28,28 @@ class PagoController extends Controller
             });
         }
 
-        if ($request->filled('sede_id')) {
-            $query->where('sede_id', $request->sede_id);
+        $sedeId = $request->sede_id ?: session('sede_id');
+        if ($sedeId) {
+            $query->where('sede_id', $sedeId);
         }
 
         if ($request->filled('nivel')) {
             $query->where('nivel_academico', $request->nivel);
         }
 
-        $alumnos = $query->orderBy('apellidos')->paginate(20)->withQueryString();
-        $sedes   = Sede::where('activo', true)->get();
-        $meses   = PagoPension::MESES;
+        $alumnos      = $query->orderBy('apellidos')->paginate(20)->withQueryString();
+        $sedes        = Sede::where('activo', true)->get();
+        $mesesActivos = ConfiguracionColegio::mesesActivos();
+        $totalMeses   = count($mesesActivos);
 
         // Stats
-        $totalAlumnos   = Alumno::where('activo', true)->count();
+        $totalAlumnos   = Alumno::where('activo', true)->when($sedeId, fn($q) => $q->where('sede_id', $sedeId))->count();
         $pagadosHoy     = PagoPension::whereDate('fecha_pago', today())->count();
         $totalRecaudado = PagoPension::where('anio', $anio)->sum('monto');
 
         return view('pagos.index', compact(
-            'alumnos', 'sedes', 'meses', 'anio',
+            'alumnos', 'sedes', 'anio',
+            'mesesActivos', 'totalMeses',
             'totalAlumnos', 'pagadosHoy', 'totalRecaudado'
         ));
     }
@@ -58,10 +62,10 @@ class PagoController extends Controller
             ->get()
             ->keyBy('mes_pagado');
 
-        $meses = PagoPension::MESES;
+        $mesesActivos = ConfiguracionColegio::mesesActivos();
         $alumno->load(['sede', 'apoderado', 'matriculas.pagoMatricula']);
 
-        return view('pagos.alumno', compact('alumno', 'pagos', 'meses', 'anio'));
+        return view('pagos.alumno', compact('alumno', 'pagos', 'mesesActivos', 'anio'));
     }
 
     public function registrarPension(Request $request, Alumno $alumno)

@@ -4,390 +4,362 @@
 <meta charset="UTF-8">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
 body {
-    font-family: 'DejaVu Sans', sans-serif;
-    font-size: 10px;
-    color: #1e293b;
+    font-family: 'DejaVu Sans', Arial, sans-serif;
+    font-size: 9.5px;
+    color: #000;
     background: #fff;
 }
 
-/* Page */
-.page {
-    width: 100%;
-    background: white;
-    overflow: hidden;
+/* ── Página tamaño ticket (media carta ancho) ── */
+@page {
+    size: 148mm 210mm;   /* A5 portrait */
+    margin: 8mm 10mm;
 }
-.stripe-top { height: 10px; background: #0b3d91; }
-.content { padding: 30px 25px; }
 
-/* Logo & Header */
-.logo { text-align: center; margin-bottom: 8px; }
-.logo-box {
-    display: inline-block;
-    width: 55px;
-    height: 55px;
-    background: #0b3d91;
-    border-radius: 10px;
-    color: white;
-    font-size: 22px;
-    font-weight: bold;
-    text-align: center;
-    line-height: 55px;
+.page { width: 100%; background: #fff; }
+
+/* ── Borde superior grueso ── */
+.borde-top    { border-top: 3px solid #000; margin-bottom: 6px; }
+.borde-medium { border-top: 1.5px solid #000; margin: 5px 0; }
+.borde-dash   { border-top: 1px dashed #000; margin: 5px 0; }
+.borde-bottom { border-top: 3px double #000; margin-top: 6px; }
+
+/* ── Encabezado ── */
+.header { text-align: center; padding: 4px 0; }
+.logo-img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+    display: block;
+    margin: 0 auto 4px;
 }
-.inst-name {
-    text-align: center;
-    font-size: 16px;
+.logo-fallback {
+    width: 44px; height: 44px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    display: inline-block;
+    line-height: 40px;
     font-weight: 900;
-    color: #0b3d91;
+    font-size: 18px;
+    text-align: center;
+    margin-bottom: 4px;
+}
+.inst-nombre {
+    font-size: 13px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 .inst-sub {
-    text-align: center;
-    font-size: 9px;
-    color: #555;
-    margin-bottom: 6px;
+    font-size: 7.5px;
+    color: #333;
+    margin-top: 1px;
 }
 
-/* Divider */
-.divider {
-    height: 3px;
-    background: linear-gradient(90deg, #0b3d91 0%, #3b82f6 50%, #0b3d91 100%);
-    margin: 10px 0;
-    border-radius: 2px;
-}
-
-/* Title */
-.titulo {
+/* ── Título del comprobante ── */
+.comp-titulo {
     text-align: center;
-    font-size: 14px;
+    font-size: 11px;
     font-weight: 900;
-    color: #0b3d91;
+    text-transform: uppercase;
     letter-spacing: 2px;
-    text-transform: uppercase;
-    margin: 12px 0;
+    padding: 5px 0 3px;
 }
-.titulo-sub {
+.comp-num {
     text-align: center;
-    font-size: 9px;
-    color: #64748b;
-    margin-top: -6px;
-    margin-bottom: 12px;
-}
-
-/* Alumno header section */
-.alumno-header {
-    display: table;
-    width: 100%;
-    margin-bottom: 12px;
-    padding: 10px;
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 6px;
-}
-.alumno-photo-cell {
-    display: table-cell;
-    width: 60px;
-    vertical-align: middle;
-}
-.alumno-photo {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    border: 2px solid #0b3d91;
-    object-fit: cover;
-}
-.alumno-photo-placeholder {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    border: 2px solid #0b3d91;
-    background: #dbeafe;
-    text-align: center;
-    line-height: 55px;
-    font-size: 18px;
-    font-weight: bold;
-    color: #1d4ed8;
-}
-.alumno-info-cell {
-    display: table-cell;
-    vertical-align: middle;
-    padding-left: 12px;
-}
-.alumno-name { font-size: 13px; font-weight: bold; color: #0f172a; }
-.alumno-dni  { font-size: 9px; color: #64748b; margin-top: 2px; }
-.badge {
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 10px;
     font-size: 8px;
-    font-weight: bold;
-    margin-top: 4px;
-}
-.badge-pink   { background: #fce7f3; color: #9d174d; }
-.badge-blue   { background: #dbeafe; color: #1d4ed8; }
-.badge-purple { background: #ede9fe; color: #5b21b6; }
-
-/* Section titles */
-.section-title {
-    background: #0b3d91;
-    color: white;
-    padding: 5px 10px;
-    font-size: 9px;
-    font-weight: bold;
-    border-radius: 4px;
-    margin: 10px 0 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
+    color: #333;
+    margin-bottom: 2px;
 }
 
-/* Data table */
-table.data-table { width: 100%; border-collapse: collapse; }
-table.data-table th { background: #0b3d91; color: white; padding: 6px 8px; font-size: 9px; text-align: left; }
-table.data-table td { padding: 5px 8px; border-bottom: 1px solid #eee; font-size: 9.5px; }
-table.data-table td.label { color: #64748b; width: 35%; }
-table.data-table td.value { font-weight: bold; color: #1e293b; }
-table.data-table tr:last-child td { border-bottom: none; }
-
-/* Pay rows */
-.pay-section { margin: 8px 0; }
-.pay-row {
+/* ── Datos en dos columnas ── */
+.fila {
     display: table;
     width: 100%;
-    padding: 4px 0;
-    border-bottom: 1px dotted #e2e8f0;
+    padding: 2.5px 0;
 }
-.pay-label {
+.fila-lbl {
     display: table-cell;
-    color: #64748b;
-    font-size: 9px;
-    width: 60%;
+    color: #444;
+    font-size: 8.5px;
+    width: 42%;
+    vertical-align: top;
 }
-.pay-value {
+.fila-val {
     display: table-cell;
     font-weight: bold;
-    font-size: 9.5px;
+    font-size: 8.5px;
+    vertical-align: top;
     text-align: right;
 }
-.pay-total {
+.fila-val-left {
+    display: table-cell;
+    font-weight: bold;
+    font-size: 8.5px;
+    vertical-align: top;
+}
+
+/* ── Sección de título ── */
+.sec-titulo {
+    font-size: 8px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    padding: 3px 0 1px;
+    color: #000;
+}
+
+/* ── Alumno destacado ── */
+.alumno-box {
+    border: 1px solid #000;
+    padding: 5px 7px;
+    margin: 4px 0;
+}
+.alumno-nombre {
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+}
+.alumno-sub {
+    font-size: 8px;
+    color: #333;
+    margin-top: 1px;
+}
+
+/* ── Detalle de pagos (estilo boleta) ── */
+.detalle-header {
     display: table;
     width: 100%;
-    padding: 6px 0;
-    margin-top: 4px;
-    border-top: 2px solid #0b3d91;
+    border-bottom: 1px solid #000;
+    padding-bottom: 2px;
+    margin-bottom: 2px;
 }
-.pay-total .pay-label { font-weight: bold; color: #0b3d91; font-size: 10px; }
-.pay-total .pay-value { color: #0b3d91; font-size: 11px; }
+.dh-desc { display: table-cell; font-size: 7.5px; font-weight: 900; text-transform: uppercase; width: 60%; }
+.dh-monto{ display: table-cell; font-size: 7.5px; font-weight: 900; text-transform: uppercase; text-align: right; }
 
-.estado-badge {
-    padding: 2px 8px;
-    border-radius: 10px;
-    font-size: 8px;
-    font-weight: bold;
+.detalle-fila {
+    display: table;
+    width: 100%;
+    padding: 2px 0;
+    border-bottom: 1px dotted #bbb;
 }
-.estado-pagado   { background: #dcfce7; color: #166534; }
-.estado-pendiente{ background: #fef9c3; color: #713f12; }
-.estado-vencido  { background: #fee2e2; color: #991b1b; }
-.estado-parcial  { background: #dbeafe; color: #1e40af; }
+.df-desc  { display: table-cell; font-size: 8.5px; width: 60%; vertical-align: middle; }
+.df-monto { display: table-cell; font-size: 8.5px; font-weight: bold; text-align: right; vertical-align: middle; }
 
-/* QR */
-.qr-section {
+.total-box {
+    display: table;
+    width: 100%;
+    border-top: 2px solid #000;
+    padding-top: 4px;
+    margin-top: 3px;
+}
+.total-lbl { display: table-cell; font-size: 10px; font-weight: 900; text-transform: uppercase; }
+.total-val { display: table-cell; font-size: 12px; font-weight: 900; text-align: right; }
+
+/* ── Estado de pago ── */
+.estado-box {
     text-align: center;
-    margin-top: 12px;
-    padding-top: 10px;
-    border-top: 1px dashed #cbd5e1;
+    border: 2px solid #000;
+    padding: 3px 8px;
+    font-size: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 5px 0;
+    display: inline-block;
+    width: 100%;
 }
-.qr-section img { width: 65px; height: 65px; }
-.qr-section p   { font-size: 7.5px; color: #94a3b8; margin-top: 3px; }
+.estado-pagado   { border-style: double; }
+.estado-pendiente{ border-style: dashed; }
 
-/* Firma */
+/* ── QR ── */
+.qr-box { text-align: center; margin: 6px 0; }
+.qr-box img { width: 55px; height: 55px; }
+.qr-label { font-size: 7px; color: #555; margin-top: 2px; }
+
+/* ── Firma ── */
 .firma-box {
-    margin-top: 30px;
+    margin-top: 10px;
     text-align: center;
 }
 .firma-linea {
-    border-top: 2px solid #0b3d91;
-    width: 180px;
-    margin: 0 auto 6px;
+    border-top: 1px solid #000;
+    width: 110px;
+    margin: 0 auto 3px;
 }
-.firma-box strong { font-size: 10px; color: #0b3d91; }
-.firma-box p { font-size: 8.5px; color: #555; }
+.firma-txt { font-size: 8px; }
 
-/* Footer */
+/* ── Footer ── */
 .footer {
-    margin-top: 14px;
-    padding-top: 8px;
-    border-top: 1px solid #e2e8f0;
+    margin-top: 6px;
     text-align: center;
-    font-size: 7.5px;
-    color: #94a3b8;
+    font-size: 7px;
+    color: #555;
 }
 
-/* Print */
-@page { margin: 10mm; }
+/* ── Marca de agua PAGADO (solo cuando está pagado) ── */
+.sello-pagado {
+    text-align: center;
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    color: #bbb;
+    border: 3px solid #bbb;
+    padding: 2px 10px;
+    display: inline-block;
+    transform: rotate(-15deg);
+    margin: 6px auto;
+    width: auto;
+}
 </style>
 </head>
 <body>
 <div class="page">
 
-    <div class="stripe-top"></div>
+@php
+    $mat = $alumno->matriculas->sortByDesc('periodo')->first();
+    $pago = $mat?->pagoMatricula;
+    $nroTicket = 'TKT-' . date('Y') . '-' . str_pad($alumno->id, 5, '0', STR_PAD_LEFT);
+    $totalAnual = $pago ? ($pago->pension_mensual * ($pago->numero_pensiones ?? 10)) : 0;
+    $descuento  = ($alumno->tipo_descuento !== 'ninguno') ? $alumno->monto_descuento : 0;
+    $totalPagar = $pago ? ($pago->monto_matricula + $totalAnual - $descuento) : 0;
+    $estadoPago = strtolower($pago?->estado_pago ?? 'pendiente');
+@endphp
 
-    <div class="content">
+<div class="borde-top"></div>
 
-        <!-- Logo -->
-        <div class="logo">
-            <div class="logo-box">J</div>
-        </div>
-        <div class="inst-name">Colegio Pre JEDSON</div>
-        <div class="inst-sub">Institución Educativa Privada &mdash; {{ $alumno->sede?->nombre ?? 'Sede Principal' }}</div>
+{{-- ENCABEZADO --}}
+<div class="header">
+    <img src="{{ public_path('images/logo.png') }}" class="logo-img" alt="Logo"
+         onerror="this.style.display='none'">
+    <div class="inst-nombre">Colegio Pre JEDSON</div>
+    <div class="inst-sub">Institución Educativa Privada — Arequipa, Perú</div>
+    <div class="inst-sub">{{ $alumno->sede?->nombre ?? 'Sede Principal' }}</div>
+</div>
 
-        <div class="divider"></div>
+<div class="borde-medium"></div>
 
-        <div class="titulo">Ticket de Matrícula {{ date('Y') }}</div>
-        <div class="titulo-sub">N° {{ str_pad($alumno->id, 6, '0', STR_PAD_LEFT) }}-{{ date('Y') }} &bull; Generado: {{ now()->format('d/m/Y H:i:s') }}</div>
+{{-- TÍTULO COMPROBANTE --}}
+<div class="comp-titulo">Comprobante de Matrícula</div>
+<div class="comp-num">
+    N° {{ $nroTicket }} &nbsp;|&nbsp;
+    Período: {{ $mat?->periodo ?? date('Y') }} &nbsp;|&nbsp;
+    Emitido: {{ $fechaEmision }}
+</div>
 
-        <!-- Alumno -->
-        <div class="alumno-header">
-            <div class="alumno-photo-cell">
-                @if($alumno->foto_path && file_exists(storage_path('app/public/' . $alumno->foto_path)))
-                    <img src="{{ storage_path('app/public/' . $alumno->foto_path) }}" class="alumno-photo" alt="">
-                @else
-                    <div class="alumno-photo-placeholder">
-                        {{ substr($alumno->nombres, 0, 1) }}{{ substr($alumno->apellidos, 0, 1) }}
-                    </div>
-                @endif
-            </div>
-            <div class="alumno-info-cell">
-                <div class="alumno-name">{{ strtoupper($alumno->apellidos) }}, {{ strtoupper($alumno->nombres) }}</div>
-                <div class="alumno-dni">DNI: {{ $alumno->dni }}</div>
-                <div>
-                    @if($alumno->nivel_academico)
-                        <span class="badge {{ $alumno->nivel_academico === 'INICIAL' ? 'badge-pink' : ($alumno->nivel_academico === 'PRIMARIA' ? 'badge-blue' : 'badge-purple') }}">
-                            {{ $alumno->nivel_academico }}
-                        </span>
-                    @endif
-                    @if($alumno->grado_seccion)
-                        <span class="badge badge-blue">{{ $alumno->grado_seccion }}</span>
-                    @endif
-                </div>
-            </div>
-        </div>
+<div class="borde-dash"></div>
 
-        <!-- Datos del Alumno -->
-        <div class="section-title">&#128100; Datos del Alumno</div>
-        <table class="data-table">
-            <tr>
-                <td class="label">Fecha de Nacimiento</td>
-                <td class="value">{{ $alumno->fecha_nacimiento?->format('d/m/Y') ?? '—' }}</td>
-            </tr>
-            <tr>
-                <td class="label">Sexo</td>
-                <td class="value">{{ $alumno->sexo ?? '—' }}</td>
-            </tr>
-            <tr>
-                <td class="label">Ciudad</td>
-                <td class="value">{{ $alumno->ciudad ?? '—' }}</td>
-            </tr>
-            <tr>
-                <td class="label">Sede</td>
-                <td class="value">{{ $alumno->sede?->nombre ?? '—' }}</td>
-            </tr>
-            @if($alumno->apoderado)
-                <tr>
-                    <td class="label">Apoderado</td>
-                    <td class="value">{{ $alumno->apoderado->nombre_completo }}</td>
-                </tr>
-                <tr>
-                    <td class="label">Teléfono Apoderado</td>
-                    <td class="value">{{ $alumno->apoderado->telefono ?? '—' }}</td>
-                </tr>
-            @endif
-        </table>
-
-        <!-- Última Matrícula -->
-        @if($alumno->matriculas->isNotEmpty())
-            @php $mat = $alumno->matriculas->sortByDesc('periodo')->first(); @endphp
-            <div class="section-title">&#128196; Datos de Matrícula</div>
-            <table class="data-table">
-                <tr>
-                    <td class="label">Código Matrícula</td>
-                    <td class="value">{{ $mat->codigo_matricula }}</td>
-                </tr>
-                <tr>
-                    <td class="label">Período Académico</td>
-                    <td class="value">{{ $mat->periodo }}</td>
-                </tr>
-                <tr>
-                    <td class="label">Nivel</td>
-                    <td class="value">{{ $mat->nivel_academico ?? $alumno->nivel_academico }}</td>
-                </tr>
-                <tr>
-                    <td class="label">Grado / Sección</td>
-                    <td class="value">{{ $mat->grado_seccion ?? $alumno->grado_seccion }}</td>
-                </tr>
-                <tr>
-                    <td class="label">Situación</td>
-                    <td class="value">{{ $mat->situacion }}</td>
-                </tr>
-                <tr>
-                    <td class="label">Modalidad de Pago</td>
-                    <td class="value">{{ ucfirst($mat->modalidad_pago) }}</td>
-                </tr>
-            </table>
-
-            @if($mat->pagoMatricula)
-                <div class="section-title">&#128176; Detalle de Pago</div>
-                <div class="pay-section">
-                    <div class="pay-row">
-                        <span class="pay-label">Monto de Matrícula:</span>
-                        <span class="pay-value">S/ {{ number_format($mat->pagoMatricula->monto_matricula, 2) }}</span>
-                    </div>
-                    <div class="pay-row">
-                        <span class="pay-label">Pensión Mensual:</span>
-                        <span class="pay-value">S/ {{ number_format($mat->pagoMatricula->pension_mensual, 2) }}</span>
-                    </div>
-                    <div class="pay-row">
-                        <span class="pay-label">N° de Pensiones:</span>
-                        <span class="pay-value">{{ $mat->pagoMatricula->numero_pensiones }}</span>
-                    </div>
-                    @if($alumno->tipo_descuento !== 'ninguno')
-                        <div class="pay-row">
-                            <span class="pay-label">Descuento ({{ ucfirst($alumno->tipo_descuento) }}):</span>
-                            <span class="pay-value" style="color:#166534">- S/ {{ number_format($alumno->monto_descuento, 2) }}</span>
-                        </div>
-                    @endif
-                    <div class="pay-row" style="border-bottom:none">
-                        <span class="pay-label">Estado de Pago:</span>
-                        <span class="estado-badge estado-{{ strtolower($mat->pagoMatricula->estado_pago) }}">
-                            {{ $mat->pagoMatricula->estado_pago }}
-                        </span>
-                    </div>
-                </div>
-            @endif
-        @endif
-
-        <!-- QR Code -->
-        @if($alumno->qr_code_path && file_exists(storage_path('app/public/' . $alumno->qr_code_path)))
-            <div class="qr-section">
-                <img src="{{ storage_path('app/public/' . $alumno->qr_code_path) }}" alt="QR Code">
-                <p>{{ $alumno->dni }} &bull; Colegio Pre JEDSON</p>
-            </div>
-        @endif
-
-        <!-- Firma -->
-        <div class="firma-box">
-            <div style="height:50px;"></div>
-            <div class="firma-linea"></div>
-            <strong>Director(a)</strong>
-            <p>Colegio Pre JEDSON</p>
-            <p>Arequipa</p>
-        </div>
-
-    </div><!-- /content -->
-
-    <!-- Footer -->
-    <div class="footer" style="padding: 0 25px 15px;">
-        <p>Colegio Pre JEDSON &bull; Institución Educativa Privada &bull; Arequipa, Perú</p>
-        <p>Ticket generado el {{ now()->format('d/m/Y H:i:s') }} &mdash; Este documento tiene validez para trámites internos.</p>
+{{-- DATOS DEL ALUMNO --}}
+<div class="alumno-box">
+    <div class="alumno-nombre">{{ $alumno->apellidos }}, {{ $alumno->nombres }}</div>
+    <div class="alumno-sub">
+        DNI: <strong>{{ $alumno->dni }}</strong>
+        &nbsp;&nbsp;
+        {{ $alumno->nivel_academico ?? '' }}
+        @if($alumno->grado_seccion) — {{ $alumno->grado_seccion }} @endif
     </div>
+    @if($alumno->apoderado)
+    <div class="alumno-sub" style="margin-top:2px;">
+        Apoderado: <strong>{{ $alumno->apoderado->nombre_completo }}</strong>
+        @if($alumno->apoderado->telefono)
+            &nbsp;| Tel: {{ $alumno->apoderado->telefono }}
+        @endif
+    </div>
+    @endif
+</div>
+
+{{-- DATOS DE MATRÍCULA --}}
+@if($mat)
+<div class="sec-titulo">Datos de Matrícula</div>
+<div class="fila">
+    <span class="fila-lbl">Código:</span>
+    <span class="fila-val">{{ $mat->codigo_matricula }}</span>
+</div>
+<div class="fila">
+    <span class="fila-lbl">Nivel / Grado:</span>
+    <span class="fila-val">{{ $mat->nivel_academico }} — {{ $mat->grado_seccion }}</span>
+</div>
+<div class="fila">
+    <span class="fila-lbl">Situación:</span>
+    <span class="fila-val">{{ $mat->situacion }}</span>
+</div>
+<div class="fila">
+    <span class="fila-lbl">Modalidad de pago:</span>
+    <span class="fila-val">{{ ucfirst($mat->modalidad_pago) }}</span>
+</div>
+@endif
+
+{{-- DETALLE DE PAGO --}}
+@if($pago)
+<div class="borde-dash"></div>
+<div class="sec-titulo">Detalle del Pago</div>
+
+<div class="detalle-header">
+    <span class="dh-desc">Concepto</span>
+    <span class="dh-monto">Monto</span>
+</div>
+
+<div class="detalle-fila">
+    <span class="df-desc">Matrícula {{ $mat->periodo }}</span>
+    <span class="df-monto">S/ {{ number_format($pago->monto_matricula, 2) }}</span>
+</div>
+<div class="detalle-fila">
+    <span class="df-desc">Pensión mensual x {{ $pago->numero_pensiones ?? 10 }}</span>
+    <span class="df-monto">S/ {{ number_format($pago->pension_mensual, 2) }} c/u</span>
+</div>
+<div class="detalle-fila" style="border-bottom:none;">
+    <span class="df-desc">Subtotal pensiones</span>
+    <span class="df-monto">S/ {{ number_format($totalAnual, 2) }}</span>
+</div>
+
+@if($descuento > 0)
+<div class="borde-dash"></div>
+<div class="detalle-fila" style="border-bottom:none;">
+    <span class="df-desc">Descuento ({{ ucfirst($alumno->tipo_descuento) }})</span>
+    <span class="df-monto">- S/ {{ number_format($descuento, 2) }}</span>
+</div>
+@endif
+
+<div class="total-box">
+    <span class="total-lbl">Total a pagar</span>
+    <span class="total-val">S/ {{ number_format($totalPagar, 2) }}</span>
+</div>
+
+<div class="borde-dash"></div>
+
+{{-- ESTADO DESTACADO --}}
+<div class="estado-box estado-{{ $estadoPago }}">
+    Estado: {{ strtoupper($pago->estado_pago) }}
+</div>
+@endif
+
+{{-- QR --}}
+@if($alumno->qr_code_path && file_exists(storage_path('app/public/' . $alumno->qr_code_path)))
+<div class="borde-dash"></div>
+<div class="qr-box">
+    <img src="{{ storage_path('app/public/' . $alumno->qr_code_path) }}" alt="QR">
+    <div class="qr-label">{{ $alumno->dni }} — Colegio Pre JEDSON</div>
+</div>
+@endif
+
+{{-- FIRMA --}}
+<div class="borde-dash"></div>
+<div class="firma-box">
+    <div style="height: 30px;"></div>
+    <div class="firma-linea"></div>
+    <div class="firma-txt"><strong>Director(a) / Administración</strong></div>
+    <div class="firma-txt">Colegio Pre JEDSON — Arequipa</div>
+</div>
+
+<div class="borde-bottom"></div>
+
+{{-- FOOTER --}}
+<div class="footer">
+    <p>Este comprobante acredita la matrícula del estudiante para el período académico indicado.</p>
+    <p>{{ $nroTicket }} &bull; {{ $fechaEmision }} &bull; Colegio Pre JEDSON</p>
+</div>
 
 </div>
 </body>

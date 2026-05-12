@@ -11,245 +11,366 @@
 <style>
 *{font-family:'Inter',sans-serif}
 [x-cloak]{display:none!important}
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Animaciones ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes blobMove{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(30px,-20px) scale(1.05)}66%{transform:translate(-20px,15px) scale(0.97)}}
+@keyframes slideLeft{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideRight{from{opacity:0;transform:translateX(30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes countUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 @keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
-@keyframes orbit{0%{transform:rotate(0deg) translateX(110px) rotate(0deg)}100%{transform:rotate(360deg) translateX(110px) rotate(-360deg)}}
-@keyframes pulse-ring{0%{transform:scale(0.9);opacity:0.7}50%{transform:scale(1.1);opacity:0.2}100%{transform:scale(0.9);opacity:0.7}}
-.fade-up{animation:fadeUp 0.5s ease both}
-.fade-up-d1{animation:fadeUp 0.5s 0.08s ease both}
-.fade-up-d2{animation:fadeUp 0.5s 0.16s ease both}
-.fade-up-d3{animation:fadeUp 0.5s 0.24s ease both}
-.fade-up-d4{animation:fadeUp 0.5s 0.32s ease both}
-.fade-in{animation:fadeIn 0.4s ease both}
-.floating{animation:float 4s ease-in-out infinite}
-.orbit{animation:orbit 22s linear infinite}
-.orbit-rev{animation:orbit 32s linear infinite reverse}
-.pulse-ring{animation:pulse-ring 3s ease-in-out infinite}
-.login-bg{background:linear-gradient(135deg,#0c0f1a 0%,#111827 35%,#1e1b4b 65%,#0f172a 100%)}
-.glass{background:rgba(255,255,255,0.055);backdrop-filter:blur(22px);border:1px solid rgba(255,255,255,0.09)}
-.btn-shimmer{background-size:200% 100%;animation:shimmer 3s linear infinite;background-image:linear-gradient(90deg,#4f46e5,#7c3aed,#6366f1,#7c3aed,#4f46e5)}
-.input-glow:focus{box-shadow:0 0 0 3px rgba(99,102,241,0.25)}
-.role-card{transition:all 0.2s ease;cursor:pointer}
-.role-card:hover{transform:translateY(-3px)}
-.role-card:hover .role-ring{opacity:1}
-.role-ring{opacity:0;transition:opacity 0.2s}
+@keyframes cardPop{from{opacity:0;transform:scale(0.92) translateY(16px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.fade-up   {animation:fadeUp 0.55s ease both}
+.fade-up-d1{animation:fadeUp 0.55s 0.1s  ease both}
+.fade-up-d2{animation:fadeUp 0.55s 0.2s  ease both}
+.fade-up-d3{animation:fadeUp 0.55s 0.3s  ease both}
+.fade-up-d4{animation:fadeUp 0.55s 0.4s  ease both}
+.slide-left {animation:slideLeft  0.6s ease both}
+.slide-right{animation:slideRight 0.6s ease both}
+.floating  {animation:float 4s ease-in-out infinite}
+.blob      {animation:blobMove 8s ease-in-out infinite}
+.blob2     {animation:blobMove 11s ease-in-out infinite reverse}
+.blob3     {animation:blobMove 9s  ease-in-out infinite 2s}
+.card-pop  {animation:cardPop 0.45s ease both}
+.card-pop-d1{animation:cardPop 0.45s 0.08s ease both}
+.card-pop-d2{animation:cardPop 0.45s 0.16s ease both}
+.card-pop-d3{animation:cardPop 0.45s 0.24s ease both}
+.btn-shimmer{background-size:200% 100%;animation:shimmer 3s linear infinite;background-image:linear-gradient(90deg,#1e40af,#3b82f6,#2563eb,#3b82f6,#1e40af)}
+
+/* ── Tarjetas de rol ── */
+.role-card{
+    transition:all 0.25s cubic-bezier(.175,.885,.32,1.275);
+    cursor:pointer;
+    background:#f8fafc;
+    border:1.5px solid #e2e8f0;
+}
+.role-card:hover{
+    transform:translateY(-4px) scale(1.02);
+    border-color:#93c5fd;
+    background:#eff6ff;
+    box-shadow:0 8px 24px rgba(59,130,246,0.13);
+}
+.role-card.selected{
+    border-color:#3b82f6;
+    background:#eff6ff;
+    box-shadow:0 0 0 3px rgba(59,130,246,0.2);
+}
+
+/* ── Inputs ── */
+.input-field{
+    width:100%;padding:.75rem 1rem .75rem 2.75rem;
+    border:1.5px solid #e2e8f0;border-radius:.75rem;
+    font-size:.875rem;color:#1e293b;background:#f8fafc;
+    outline:none;transition:all .2s;
+}
+.input-field:focus{border-color:#3b82f6;background:#fff;box-shadow:0 0 0 3px rgba(59,130,246,.15)}
+.input-field::placeholder{color:#94a3b8}
+
+/* ── Stat chips ── */
+.stat-chip{
+    background:rgba(255,255,255,.08);
+    border:1px solid rgba(255,255,255,.12);
+    border-radius:1rem;padding:.75rem 1.5rem;
+    backdrop-filter:blur(8px);
+    transition:all .2s;
+}
+.stat-chip:hover{background:rgba(255,255,255,.13)}
+
+/* ── Fondo general ── */
+.page-bg{
+    background:linear-gradient(135deg,#f0f9ff 0%,#e0f2fe 30%,#faf5ff 60%,#fefce8 100%);
+}
 </style>
 </head>
-<body class="login-bg min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+<body class="page-bg min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
 
-<!-- Fondo animado -->
-<div class="absolute inset-0 overflow-hidden pointer-events-none">
-    <div class="absolute top-1/4 left-1/4 w-72 h-72 bg-blue-600/8 rounded-full blur-3xl floating"></div>
-    <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-indigo-600/8 rounded-full blur-3xl" style="animation:float 5s ease-in-out infinite;animation-delay:1s"></div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <div class="w-3 h-3 bg-blue-400/25 rounded-full orbit"></div>
-    </div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <div class="w-2 h-2 bg-purple-400/20 rounded-full orbit-rev"></div>
-    </div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-56 h-56 border border-white/[0.04] rounded-full pulse-ring"></div>
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 border border-white/[0.025] rounded-full pulse-ring" style="animation-delay:1.2s"></div>
-    <div class="absolute inset-0" style="background-image:radial-gradient(rgba(255,255,255,0.025) 1px,transparent 1px);background-size:40px 40px"></div>
+<!-- Blobs decorativos de fondo -->
+<div class="fixed inset-0 pointer-events-none overflow-hidden">
+    <div class="blob  absolute -top-32 -left-32  w-96 h-96  bg-blue-300/25  rounded-full blur-3xl"></div>
+    <div class="blob2 absolute -bottom-24 -right-24 w-96 h-96  bg-purple-300/20 rounded-full blur-3xl"></div>
+    <div class="blob3 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-teal-200/15 rounded-full blur-3xl"></div>
+    <div class="blob  absolute top-10 right-1/4 w-48 h-48 bg-yellow-200/20 rounded-full blur-2xl" style="animation-duration:13s"></div>
 </div>
 
-<div class="w-full max-w-lg relative z-10"
+<!-- ════════════════════════════════════════════
+     CONTENEDOR PRINCIPAL SPLIT
+     ════════════════════════════════════════════ -->
+<div class="relative z-10 w-full max-w-5xl"
      x-data="{
         step: '{{ $errors->any() && old('role') ? 'login' : 'roles' }}',
         selectedRole: '{{ old('role') }}' || null,
         loading: false,
         showPass: false,
         roles: [
-            { key: 'administrador', label: 'Administrador',  icon: 'fa-shield-halved',      from: 'from-blue-500',   to: 'to-blue-700',   ring: 'ring-blue-500/40',   text: 'text-blue-400',   desc: 'Gestión total del sistema' },
-            { key: 'auxiliar',      label: 'Auxiliar',        icon: 'fa-clipboard-list',     from: 'from-teal-500',   to: 'to-teal-700',   ring: 'ring-teal-500/40',   text: 'text-teal-400',   desc: 'Apoyo administrativo' },
-            { key: 'docente',       label: 'Docente',         icon: 'fa-chalkboard-user',    from: 'from-violet-500', to: 'to-violet-700', ring: 'ring-violet-500/40', text: 'text-violet-400', desc: 'Asistencia y alumnos' }
+            { key: 'administrador', label: 'Administrador', icon: 'fa-shield-halved',   color: '#2563eb', bg: '#eff6ff', desc: 'Gestión total del sistema' },
+            { key: 'auxiliar',      label: 'Auxiliar',       icon: 'fa-clipboard-list', color: '#0d9488', bg: '#f0fdfa', desc: 'Apoyo administrativo'      },
+            { key: 'docente',       label: 'Docente',         icon: 'fa-chalkboard-user',color: '#7c3aed', bg: '#f5f3ff', desc: 'Asistencia y alumnos'      }
         ],
         get current() { return this.roles.find(r => r.key === this.selectedRole) }
      }">
 
-    <!-- Volver al landing -->
-    <a href="{{ route('landing') }}"
-       class="inline-flex items-center gap-2 text-slate-400 hover:text-white text-sm mb-6 transition group fade-up">
-        <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform"></i> Volver al inicio
-    </a>
+    <!-- ── Tarjeta split ── -->
+    <div class="flex rounded-3xl overflow-hidden shadow-2xl shadow-slate-900/20" style="min-height:520px">
 
-    <!-- ── STEP 1: Selección de rol ── -->
-    <div x-show="step === 'roles'" x-cloak
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0 translate-y-4"
-         x-transition:enter-end="opacity-100 translate-y-0"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100 translate-y-0"
-         x-transition:leave-end="opacity-0 -translate-y-4">
+        <!-- ══════════════════════════
+             PANEL IZQUIERDO (azul oscuro)
+             ══════════════════════════ -->
+        <div class="slide-left relative hidden md:flex flex-col items-center justify-between w-80 shrink-0 p-8 overflow-hidden"
+             style="background:linear-gradient(160deg,#0f172a 0%,#1e3a5f 50%,#0f2644 100%)">
 
-        <div class="glass rounded-3xl shadow-2xl shadow-black/30 overflow-hidden">
+            <!-- Decoración interna -->
+            <div class="absolute inset-0 pointer-events-none overflow-hidden">
+                <div class="absolute top-0 right-0 w-48 h-48 bg-blue-500/10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/3"></div>
+                <div class="absolute bottom-0 left-0 w-48 h-48 bg-indigo-500/10 rounded-full blur-2xl translate-y-1/3 -translate-x-1/4"></div>
+                <div class="absolute inset-0" style="background-image:radial-gradient(rgba(255,255,255,.03) 1px,transparent 1px);background-size:28px 28px"></div>
+            </div>
 
-            <!-- Header -->
-            <div class="relative px-8 pt-8 pb-6 text-center overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-b from-blue-600/8 to-transparent"></div>
-                <div class="relative">
-                    <!-- Logo -->
-                    <div class="fade-up inline-block mb-4">
-                        <img src="{{ asset('images/logo.png') }}" alt="Logo JEDSON"
-                             class="h-16 w-auto mx-auto floating" style="animation-duration:3.5s"
-                             onerror="this.style.display='none';this.nextElementSibling.style.display='inline-flex'">
-                        <div style="display:none" class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl shadow-lg floating" style="animation-duration:3.5s">
-                            <i class="fa-solid fa-graduation-cap text-white text-2xl"></i>
+            <!-- Logo + nombre -->
+            <div class="relative text-center">
+                <div class="fade-up inline-block mb-5">
+                    <div class="floating w-24 h-24 mx-auto mb-1 flex items-center justify-center" style="animation-duration:3.5s">
+                        @php
+                            $loginLogo = collect(['logo.png','logo.svg','ebe.png','logo.jpg','logo.webp'])
+                                ->first(fn($f) => file_exists(public_path("images/{$f}")));
+                        @endphp
+                        @if($loginLogo)
+                        <img src="{{ asset('images/'.$loginLogo) }}" alt="Logo JEDSON"
+                             class="h-24 w-auto object-contain drop-shadow-2xl">
+                        @else
+                        <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-3xl flex items-center justify-center shadow-xl shadow-blue-500/30">
+                            <i class="fa-solid fa-graduation-cap text-white text-4xl"></i>
                         </div>
+                        @endif
                     </div>
-                    <h1 class="fade-up-d1 text-white text-2xl font-extrabold tracking-tight">Colegio Pre JEDSON</h1>
-                    <p class="fade-up-d2 text-slate-400 text-sm mt-1">Arequipa &bull; Perú &bull; Sistema de Gestión</p>
+                </div>
+
+                <h1 class="fade-up-d1 text-white text-xl font-extrabold leading-tight">Colegio Pre<br><span class="text-blue-300">JEDSON</span></h1>
+                <p class="fade-up-d2 text-slate-400 text-xs mt-2 font-medium">Sistema de Gestión Escolar</p>
+                <div class="fade-up-d2 w-10 h-0.5 bg-blue-500/60 mx-auto mt-3 rounded-full"></div>
+                <p class="fade-up-d3 text-slate-500 text-xs mt-3">Arequipa &bull; Perú</p>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="relative w-full space-y-3 fade-up-d3">
+                <div class="stat-chip flex items-center gap-3">
+                    <div class="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-calendar-check text-blue-400 text-xs"></i>
+                    </div>
+                    <div>
+                        <p class="text-blue-300 text-lg font-extrabold leading-none">5+</p>
+                        <p class="text-slate-500 text-[10px] uppercase tracking-wide font-semibold">Años de experiencia</p>
+                    </div>
+                </div>
+                <div class="stat-chip flex items-center gap-3">
+                    <div class="w-8 h-8 bg-teal-500/20 rounded-lg flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-user-graduate text-teal-400 text-xs"></i>
+                    </div>
+                    <div>
+                        <p class="text-teal-300 text-lg font-extrabold leading-none">300+</p>
+                        <p class="text-slate-500 text-[10px] uppercase tracking-wide font-semibold">Estudiantes</p>
+                    </div>
+                </div>
+                <div class="stat-chip flex items-center gap-3">
+                    <div class="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center shrink-0">
+                        <i class="fa-solid fa-award text-purple-400 text-xs"></i>
+                    </div>
+                    <div>
+                        <p class="text-purple-300 text-lg font-extrabold leading-none">Excelencia</p>
+                        <p class="text-slate-500 text-[10px] uppercase tracking-wide font-semibold">Educativa</p>
+                    </div>
                 </div>
             </div>
 
-            <!-- Role picker -->
-            <div class="px-8 pb-8">
-                <p class="fade-up-d2 text-slate-300 text-sm font-semibold text-center mb-5">
-                    Selecciona tu perfil para continuar
-                </p>
-
-                <div class="grid grid-cols-3 gap-3 fade-up-d3">
-                    <template x-for="role in roles" :key="role.key">
-                        <button type="button"
-                                @click="selectedRole = role.key; step = 'login'"
-                                class="role-card glass rounded-2xl p-4 flex flex-col items-center gap-3 group"
-                                :class="`ring-0 hover:ring-2 ${role.ring}`">
-
-                            <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-gradient-to-br shadow-lg"
-                                 :class="`${role.from} ${role.to}`">
-                                <i class="fa-solid text-white text-lg" :class="role.icon"></i>
-                            </div>
-
-                            <div class="text-center">
-                                <p class="text-white text-xs font-bold leading-tight" x-text="role.label"></p>
-                                <p class="text-slate-500 text-[10px] mt-0.5 leading-tight" x-text="role.desc"></p>
-                            </div>
-
-                            <div class="role-ring w-full h-0.5 rounded-full bg-gradient-to-r"
-                                 :class="`${role.from} ${role.to}`"></div>
-                        </button>
-                    </template>
-                </div>
-            </div>
+            <!-- Footer panel izquierdo -->
+            <p class="relative text-slate-600 text-[10px] text-center fade-up-d4">&copy; {{ date('Y') }} Colegio Pre JEDSON</p>
         </div>
 
-        <p class="fade-up-d4 text-center text-slate-600 text-xs mt-5">
-            &copy; {{ date('Y') }} Colegio Pre JEDSON &mdash; Sistema de Gestión Escolar
-        </p>
-    </div>
+        <!-- ══════════════════════════
+             PANEL DERECHO (blanco)
+             ══════════════════════════ -->
+        <div class="slide-right flex-1 bg-white flex flex-col">
 
-    <!-- ── STEP 2: Formulario de login ── -->
-    <div x-show="step === 'login'" x-cloak
-         x-transition:enter="transition ease-out duration-300"
-         x-transition:enter-start="opacity-0 translate-y-4"
-         x-transition:enter-end="opacity-100 translate-y-0"
-         x-transition:leave="transition ease-in duration-200"
-         x-transition:leave-start="opacity-100 translate-y-0"
-         x-transition:leave-end="opacity-0 -translate-y-4">
-
-        <div class="glass rounded-3xl shadow-2xl shadow-black/30 overflow-hidden">
-
-            <!-- Header con rol seleccionado -->
-            <div class="relative px-8 pt-7 pb-5 overflow-hidden">
-                <div class="absolute inset-0 bg-gradient-to-b from-blue-600/8 to-transparent"></div>
-                <div class="relative flex items-center gap-4">
-                    <!-- Volver -->
-                    <button type="button" @click="step = 'roles'"
-                            class="flex-shrink-0 w-9 h-9 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center text-slate-400 hover:text-white transition">
-                        <i class="fa-solid fa-arrow-left text-sm"></i>
-                    </button>
-
-                    <!-- Logo pequeño -->
-                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-9 w-auto shrink-0"
-                         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
-                    <div style="display:none" class="shrink-0 w-9 h-9 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl items-center justify-center shadow-lg shadow-blue-500/25">
-                        <i class="fa-solid fa-graduation-cap text-white text-sm"></i>
-                    </div>
-
-                    <div class="flex-1 min-w-0">
-                        <p class="text-white font-bold text-sm leading-tight">Colegio Pre JEDSON</p>
-                        <p class="text-slate-400 text-xs">Iniciar sesión</p>
-                    </div>
-
-                    <!-- Badge del rol -->
-                    <template x-if="current">
-                        <span class="flex-shrink-0 inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/5 border border-white/10"
-                              :class="current.text">
-                            <i class="fa-solid" :class="current.icon"></i>
-                            <span x-text="current.label"></span>
-                        </span>
-                    </template>
+            <!-- Volver al inicio (top bar) -->
+            <div class="flex items-center justify-between px-8 pt-6 pb-2">
+                <a href="{{ route('landing') }}"
+                   class="inline-flex items-center gap-1.5 text-slate-400 hover:text-blue-600 text-sm transition group font-medium">
+                    <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform text-xs"></i>
+                    Volver al inicio
+                </a>
+                <!-- Logo móvil (solo en pantallas pequeñas) -->
+                <div class="flex md:hidden items-center gap-2">
+                    <img src="{{ asset('images/logo.png') }}" alt="Logo" class="h-8 w-auto"
+                         onerror="this.style.display='none'">
+                    <span class="text-sm font-bold text-slate-700">JEDSON</span>
                 </div>
             </div>
 
-            <!-- Formulario -->
-            <div class="px-8 pb-8">
-                <form action="{{ route('login.post') }}" method="POST"
-                      @submit="loading = true">
+            <!-- ── STEP 1: Selección de rol ── -->
+            <div x-show="step === 'roles'" x-cloak
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-x-4"
+                 x-transition:enter-end="opacity-100 translate-x-0"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 translate-x-0"
+                 x-transition:leave-end="opacity-0 -translate-x-4"
+                 class="flex-1 flex flex-col justify-center px-8 pb-8 pt-4">
+
+                <!-- Bienvenida -->
+                <div class="mb-8">
+                    <h2 class="fade-up text-2xl font-extrabold text-slate-800">
+                        ¡Bienvenido! <span class="inline-block" style="animation:float 2s ease-in-out infinite">👋</span>
+                    </h2>
+                    <p class="fade-up-d1 text-slate-500 text-sm mt-1">Selecciona tu tipo de acceso para continuar</p>
+                </div>
+
+                <!-- Cards de rol (3 tarjetas en fila, o 2+1 centrado) -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <!-- Administrador -->
+                    <button type="button"
+                            @click="selectedRole = 'administrador'; step = 'login'"
+                            class="card-pop role-card rounded-2xl p-6 flex flex-col items-center gap-3 text-center">
+                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-md"
+                             style="background:#eff6ff">
+                            <i class="fa-solid fa-shield-halved text-2xl" style="color:#2563eb"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 text-sm">Administrador</p>
+                            <p class="text-slate-400 text-xs mt-0.5">Gestión total del sistema</p>
+                        </div>
+                    </button>
+
+                    <!-- Auxiliar -->
+                    <button type="button"
+                            @click="selectedRole = 'auxiliar'; step = 'login'"
+                            class="card-pop-d1 role-card rounded-2xl p-6 flex flex-col items-center gap-3 text-center">
+                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-md"
+                             style="background:#f0fdfa">
+                            <i class="fa-solid fa-clipboard-list text-2xl" style="color:#0d9488"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 text-sm">Auxiliar</p>
+                            <p class="text-slate-400 text-xs mt-0.5">Apoyo administrativo</p>
+                        </div>
+                    </button>
+
+                    <!-- Docente -->
+                    <button type="button"
+                            @click="selectedRole = 'docente'; step = 'login'"
+                            class="card-pop-d2 role-card rounded-2xl p-6 flex flex-col items-center gap-3 text-center">
+                        <div class="w-14 h-14 rounded-2xl flex items-center justify-center shadow-md"
+                             style="background:#f5f3ff">
+                            <i class="fa-solid fa-chalkboard-user text-2xl" style="color:#7c3aed"></i>
+                        </div>
+                        <div>
+                            <p class="font-bold text-slate-800 text-sm">Docente</p>
+                            <p class="text-slate-400 text-xs mt-0.5">Asistencia y alumnos</p>
+                        </div>
+                    </button>
+                </div>
+
+                <p class="mt-8 text-center text-slate-400 text-xs">
+                    &copy; {{ date('Y') }} Colegio Pre JEDSON &mdash; Sistema de Gestión Escolar
+                </p>
+            </div>
+
+            <!-- ── STEP 2: Formulario de login ── -->
+            <div x-show="step === 'login'" x-cloak
+                 x-transition:enter="transition ease-out duration-300"
+                 x-transition:enter-start="opacity-0 translate-x-4"
+                 x-transition:enter-end="opacity-100 translate-x-0"
+                 x-transition:leave="transition ease-in duration-200"
+                 x-transition:leave-start="opacity-100 translate-x-0"
+                 x-transition:leave-end="opacity-0 -translate-x-4"
+                 class="flex-1 flex flex-col justify-center px-8 pb-8 pt-4">
+
+                <!-- Cabecera con rol seleccionado -->
+                <div class="mb-6 fade-up">
+                    <div class="flex items-center gap-3 mb-4">
+                        <button type="button" @click="step = 'roles'"
+                                class="w-8 h-8 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 flex items-center justify-center text-slate-500 hover:text-blue-600 transition shadow-sm">
+                            <i class="fa-solid fa-arrow-left text-xs"></i>
+                        </button>
+                        <template x-if="current">
+                            <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold border"
+                                  :style="`color:${current.color};background:${current.bg};border-color:${current.color}33`">
+                                <i class="fa-solid" :class="current.icon"></i>
+                                <span x-text="current.label"></span>
+                            </span>
+                        </template>
+                    </div>
+                    <h2 class="text-2xl font-extrabold text-slate-800">Iniciar sesión</h2>
+                    <p class="text-slate-500 text-sm mt-1">Ingresa tus credenciales para acceder</p>
+                </div>
+
+                <!-- Errores -->
+                @if($errors->any())
+                    <div class="mb-5 flex items-start gap-2.5 bg-red-50 border border-red-200 rounded-xl px-4 py-3 fade-up">
+                        <i class="fa-solid fa-circle-exclamation text-red-500 mt-0.5 shrink-0 text-sm"></i>
+                        <div class="text-xs text-red-600 space-y-0.5">
+                            @foreach($errors->all() as $error)
+                                <p>{{ $error }}</p>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+
+                <form action="{{ route('login.post') }}" method="POST" @submit="loading = true" class="space-y-4 fade-up-d1">
                     @csrf
                     <input type="hidden" name="role" :value="selectedRole">
 
-                    @if($errors->any())
-                        <div class="mb-5 flex items-start gap-2.5 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
-                            <i class="fa-solid fa-circle-exclamation text-red-400 mt-0.5 flex-shrink-0"></i>
-                            <div class="text-xs text-red-300 space-y-0.5">
-                                @foreach($errors->all() as $error)
-                                    <p>{{ $error }}</p>
-                                @endforeach
-                            </div>
-                        </div>
-                    @endif
-
                     <!-- DNI o Correo -->
-                    <div class="mb-4">
-                        <label for="identifier" class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">
+                    <div>
+                        <label for="identifier" class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wider">
                             DNI o Correo Electrónico
                         </label>
                         <div class="relative">
-                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
                                 <i class="fa-solid fa-id-card text-sm"></i>
                             </span>
                             <input type="text" id="identifier" name="identifier"
                                    value="{{ old('identifier') }}"
                                    autocomplete="username"
-                                   class="w-full pl-10 pr-4 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition input-glow {{ $errors->has('identifier') ? 'border-red-500/40 bg-red-500/5' : '' }}"
+                                   class="input-field {{ $errors->has('identifier') ? 'border-red-400 bg-red-50' : '' }}"
                                    placeholder="12345678 ó correo@jedson.edu.pe"
                                    required autofocus>
                         </div>
                     </div>
 
                     <!-- Contraseña -->
-                    <div class="mb-5">
-                        <label for="password" class="block text-xs font-semibold text-slate-400 mb-2 uppercase tracking-wider">
+                    <div>
+                        <label for="password" class="block text-xs font-semibold text-slate-600 mb-1.5 uppercase tracking-wider">
                             Contraseña
                         </label>
                         <div class="relative">
-                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500">
+                            <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400">
                                 <i class="fa-solid fa-lock text-sm"></i>
                             </span>
                             <input :type="showPass ? 'text' : 'password'"
                                    id="password" name="password"
                                    autocomplete="current-password"
-                                   class="w-full pl-10 pr-12 py-3 bg-white/5 border border-white/10 rounded-xl text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition input-glow {{ $errors->has('password') ? 'border-red-500/40 bg-red-500/5' : '' }}"
+                                   class="input-field pr-12 {{ $errors->has('password') ? 'border-red-400 bg-red-50' : '' }}"
                                    placeholder="••••••••" required>
                             <button type="button" @click="showPass = !showPass"
-                                    class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition">
+                                    class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition">
                                 <i :class="showPass ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'" class="text-sm"></i>
                             </button>
                         </div>
                     </div>
 
                     <!-- Recordarme -->
-                    <div class="flex items-center mb-6">
+                    <div class="flex items-center">
                         <input type="checkbox" id="remember" name="remember"
-                               class="w-4 h-4 text-indigo-600 bg-white/5 border-white/20 rounded focus:ring-indigo-500 focus:ring-2">
-                        <label for="remember" class="ml-2 text-sm text-slate-400">Recordarme</label>
+                               class="w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500">
+                        <label for="remember" class="ml-2 text-sm text-slate-500">Recordarme</label>
                     </div>
 
                     <!-- Botón -->
                     <button type="submit" :disabled="loading"
-                            class="w-full btn-shimmer hover:brightness-110 text-white font-bold py-3.5 px-6 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-50 shadow-lg shadow-indigo-500/20">
+                            class="w-full btn-shimmer text-white font-bold py-3.5 px-6 rounded-xl transition-all flex items-center justify-center gap-2 disabled:opacity-60 shadow-lg shadow-blue-500/25 hover:brightness-110 mt-2">
                         <template x-if="!loading">
                             <span class="flex items-center gap-2">
                                 <i class="fa-solid fa-right-to-bracket"></i>
@@ -258,22 +379,22 @@
                         </template>
                         <template x-if="loading">
                             <span class="flex items-center gap-2">
-                                <i class="fa-solid fa-spinner fa-spin"></i>
+                                <i class="fa-solid fa-spinner" style="animation:spin .8s linear infinite"></i>
                                 Verificando...
                             </span>
                         </template>
                     </button>
                 </form>
-            </div>
-        </div>
 
-        <p class="text-center text-slate-600 text-xs mt-5">
-            &copy; {{ date('Y') }} Colegio Pre JEDSON &mdash; Sistema de Gestión Escolar
-        </p>
+                <p class="mt-6 text-center text-slate-400 text-xs">
+                    &copy; {{ date('Y') }} Colegio Pre JEDSON &mdash; Sistema de Gestión Escolar
+                </p>
+            </div>
+            <!-- fin panel derecho -->
+        </div>
+        <!-- fin split -->
     </div>
 
 </div>
-
-
 </body>
 </html>

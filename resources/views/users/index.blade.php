@@ -9,10 +9,24 @@
     <div>
         <p class="text-slate-500 text-sm mt-0.5">Administra las cuentas de acceso al sistema</p>
     </div>
-    <a href="{{ route('users.create') }}"
-       class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm">
-        <i class="fa-solid fa-user-plus"></i> Nuevo Usuario
-    </a>
+    <div class="flex gap-2">
+        <form action="{{ route('users.generar-qr-todos') }}" method="POST">
+            @csrf
+            <button type="submit"
+                    onclick="return confirm('¿Generar QR para todos los docentes y auxiliares activos?')"
+                    class="inline-flex items-center gap-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white text-sm font-semibold rounded-xl transition shadow-sm">
+                <i class="fa-solid fa-qrcode"></i> Generar QRs
+            </button>
+        </form>
+        <a href="{{ route('users.carnets') }}" target="_blank"
+           class="inline-flex items-center gap-2 px-4 py-2.5 bg-purple-600 hover:bg-purple-700 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm">
+            <i class="fa-solid fa-id-card"></i> Imprimir Carnets
+        </a>
+        <a href="{{ route('users.create') }}"
+           class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl transition-colors shadow-sm">
+            <i class="fa-solid fa-user-plus"></i> Nuevo Usuario
+        </a>
+    </div>
 </div>
 
 <!-- Tabla -->
@@ -96,22 +110,40 @@
 
                     <!-- Acciones -->
                     <td class="px-5 py-4 text-center">
-                        @if($user->id !== auth()->id())
-                        <form action="{{ route('users.toggle', $user) }}" method="POST" class="inline">
-                            @csrf
-                            <button type="submit"
-                                    class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors
-                                        {{ $user->activo
-                                            ? 'bg-red-50 hover:bg-red-100 text-red-600'
-                                            : 'bg-green-50 hover:bg-green-100 text-green-600' }}"
-                                    onclick="return confirm('¿{{ $user->activo ? 'Desactivar' : 'Activar' }} al usuario {{ $user->name }}?')">
-                                <i class="fa-solid {{ $user->activo ? 'fa-user-slash' : 'fa-user-check' }}"></i>
-                                {{ $user->activo ? 'Desactivar' : 'Activar' }}
-                            </button>
-                        </form>
-                        @else
-                            <span class="text-xs text-slate-400 italic">Tu cuenta</span>
-                        @endif
+                        <div class="flex items-center justify-center gap-1.5">
+                            {{-- QR --}}
+                            <form action="{{ route('users.generar-qr', $user) }}" method="POST">
+                                @csrf
+                                <button type="submit" title="{{ $user->qr_code_path ? 'Regenerar QR' : 'Generar QR' }}"
+                                        class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition
+                                            {{ $user->qr_code_path ? 'bg-teal-50 hover:bg-teal-100 text-teal-700' : 'bg-slate-100 hover:bg-slate-200 text-slate-600' }}">
+                                    <i class="fa-solid fa-qrcode"></i>
+                                    {{ $user->qr_code_path ? 'QR ✓' : 'QR' }}
+                                </button>
+                            </form>
+                            {{-- Ver QR --}}
+                            @if($user->qr_code_path && Storage::disk('public')->exists($user->qr_code_path))
+                                <a href="{{ Storage::url($user->qr_code_path) }}" target="_blank"
+                                   title="Ver QR"
+                                   class="inline-flex items-center px-2.5 py-1.5 rounded-lg text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 transition">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                            @endif
+                            {{-- Toggle activo --}}
+                            @if($user->id !== auth()->id())
+                            <form action="{{ route('users.toggle', $user) }}" method="POST">
+                                @csrf
+                                <button type="submit"
+                                        class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-xs font-semibold transition-colors
+                                            {{ $user->activo ? 'bg-red-50 hover:bg-red-100 text-red-600' : 'bg-green-50 hover:bg-green-100 text-green-600' }}"
+                                        onclick="return confirm('¿{{ $user->activo ? 'Desactivar' : 'Activar' }} a {{ $user->name }}?')">
+                                    <i class="fa-solid {{ $user->activo ? 'fa-user-slash' : 'fa-user-check' }}"></i>
+                                </button>
+                            </form>
+                            @else
+                                <span class="text-xs text-slate-400 italic">Tú</span>
+                            @endif
+                        </div>
                     </td>
                 </tr>
                 @empty

@@ -7,6 +7,7 @@ use App\Models\Matricula;
 use App\Models\PagoMatricula;
 use App\Models\Sede;
 use App\Imports\MatriculasImport;
+use App\Exports\MatriculaPlantillaExport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -14,7 +15,12 @@ class MatriculaController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Matricula::with(['alumno', 'sede', 'pagoMatricula']);
+        $sedeId = $request->sede_id ?: session('sede_id');
+        $query  = Matricula::with(['alumno', 'sede', 'pagoMatricula']);
+
+        if ($sedeId) {
+            $query->where('sede_id', $sedeId);
+        }
 
         if ($request->filled('buscar')) {
             $buscar = $request->buscar;
@@ -32,10 +38,6 @@ class MatriculaController extends Controller
             $query->where('periodo', $request->periodo);
         }
 
-        if ($request->filled('sede_id')) {
-            $query->where('sede_id', $request->sede_id);
-        }
-
         if ($request->filled('nivel')) {
             $query->where('nivel_academico', $request->nivel);
         }
@@ -44,7 +46,7 @@ class MatriculaController extends Controller
         $sedes      = Sede::where('activo', true)->get();
         $periodos   = Matricula::distinct()->pluck('periodo')->sortDesc();
 
-        return view('matriculas.index', compact('matriculas', 'sedes', 'periodos'));
+        return view('matriculas.index', compact('matriculas', 'sedes', 'periodos', 'sedeId'));
     }
 
     public function create()
@@ -96,15 +98,42 @@ class MatriculaController extends Controller
         return view('matriculas.show', compact('matricula'));
     }
 
+    public function plantilla(string $nivel = 'primaria')
+    {
+        $nivel = strtolower($nivel);
+        if (!in_array($nivel, ['inicial','primaria','secundaria'])) $nivel = 'primaria';
+        return Excel::download(
+            new MatriculaPlantillaExport($nivel),
+            "plantilla_matriculas_{$nivel}_jedson.xlsx"
+        );
+    }
+
     public function importar(Request $request)
     {
         $request->validate([
-            'archivo' => 'required|mimes:xlsx,xls,csv|max:5120',
+            'archivo'  => 'required|mimes:xlsx,xls,csv|max:10240',
+            'nivel'    => 'required|in:INICIAL,PRIMARIA,SECUNDARIA',
+            'periodo'  => 'required|integer|min:2020|max:2099',
+            'sede_id'  => 'nullable|exists:sedes,id',
+            'monto_matricula' => 'nullable|numeric|min:0',
+            'pension_mensual' => 'nullable|numeric|min:0',
         ]);
 
         try {
-            Excel::import(new MatriculasImport, $request->file('archivo'));
-            return back()->with('success', 'Matrículas importadas correctamente.');
+            $import = new \App\Imports\MatriculasImport(
+                nivel:           $request->nivel,
+                sedeId:          $request->sede_id ?: session('sede_id'),
+                periodo:         (int)$request->periodo,
+                montoMatDefault: (float)($request->monto_matricula ?: 100),
+                pensionDefault:  (float)($request->pension_mensual  ?: 240),
+            );
+            $import->import($request->file('archivo')->getPathname());
+
+            $msg = "Importación completada: {$import->procesados} alumno(s) procesado(s)";
+            if ($import->omitidos)   $msg .= ", {$import->omitidos} omitido(s)";
+            if ($import->errores)    $msg .= ". Errores: " . implode(' | ', array_slice($import->errores, 0, 3));
+
+            return back()->with($import->errores ? 'error' : 'success', $msg);
         } catch (\Exception $e) {
             return back()->with('error', 'Error al importar: ' . $e->getMessage());
         }

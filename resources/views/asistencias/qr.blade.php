@@ -63,7 +63,7 @@
             <div x-show="result" x-transition
                  class="rounded-xl p-4 flex items-center gap-4"
                  :class="success ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'">
-                <div class="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
+                <div class="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
                      :class="success ? 'bg-green-100' : 'bg-red-100'">
                     <i :class="success ? 'fa-solid fa-check text-green-600' : 'fa-solid fa-xmark text-red-600'"></i>
                 </div>
@@ -209,20 +209,32 @@ function qrScanner() {
         },
 
         processQR(data) {
-            // Extract alumno ID from URL or raw data
-            const match = data.match(/\/alumnos\/(\d+)/);
-            const alumnoId = match ? match[1] : data;
+            data = data.trim();
 
-            if (!isNaN(alumnoId) && alumnoId > 0) {
-                this.registerAttendance(alumnoId);
-            } else {
-                this.result = 'QR no válido para este sistema';
-                this.success = false;
-                setTimeout(() => this.scanLoop(), 2000);
+            // Formato nuevo: ALU:123 o USR:456
+            if (/^ALU:\d+$/i.test(data)) {
+                this.registerAttendance('ALU', data.split(':')[1]);
+                return;
             }
+            if (/^USR:\d+$/i.test(data)) {
+                this.registerAttendance('USR', data.split(':')[1]);
+                return;
+            }
+            // Formato URL antiguo: /alumnos/123
+            const matchAlu = data.match(/\/alumnos\/(\d+)/);
+            if (matchAlu) { this.registerAttendance('ALU', matchAlu[1]); return; }
+            // Número puro
+            if (/^\d+$/.test(data) && parseInt(data) > 0) {
+                this.registerAttendance('ALU', data);
+                return;
+            }
+            this.result = 'QR no reconocido';
+            this.resultDetail = data.substring(0, 40);
+            this.success = false;
+            setTimeout(() => this.scanLoop(), 2000);
         },
 
-        async registerAttendance(alumnoId) {
+        async registerAttendance(tipo, id) {
             try {
                 const response = await fetch('{{ route('asistencias.registrar-qr') }}', {
                     method: 'POST',
@@ -230,15 +242,12 @@ function qrScanner() {
                         'Content-Type': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
                     },
-                    body: JSON.stringify({ alumno_id: alumnoId }),
+                    body: JSON.stringify({ tipo, id }),
                 });
-
                 const data = await response.json();
                 this.result = data.mensaje;
-                this.resultDetail = 'Hora: ' + data.hora;
+                this.resultDetail = data.detalle || ('Hora: ' + data.hora);
                 this.success = data.success;
-
-                // Continue scanning after delay
                 setTimeout(() => this.scanLoop(), 3000);
             } catch (e) {
                 this.result = 'Error al registrar asistencia';
@@ -249,7 +258,7 @@ function qrScanner() {
 
         manualRegister() {
             if (this.manualId) {
-                this.registerAttendance(this.manualId);
+                this.registerAttendance('ALU', this.manualId);
             }
         }
     };

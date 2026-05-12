@@ -21,7 +21,7 @@
             <img src="{{ Storage::url($alumno->foto_path) }}" alt=""
                  class="w-16 h-16 rounded-full object-cover border-2 border-blue-100">
         @else
-            <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center flex-shrink-0">
+            <div class="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center shrink-0">
                 <span class="text-blue-700 text-xl font-bold">
                     {{ substr($alumno->nombres, 0, 1) }}{{ substr($alumno->apellidos, 0, 1) }}
                 </span>
@@ -66,10 +66,43 @@
     @endforeach
 </div>
 
+<!-- Pago de Matrícula -->
+@php $pagoMat = $alumno->matriculas->sortByDesc('periodo')->first()?->pagoMatricula; @endphp
+@if($pagoMat)
+<div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm p-5 mb-5">
+    <h3 class="text-slate-700 font-bold text-sm mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-file-signature text-blue-600 text-xs"></i>
+        Pago de Matrícula {{ $alumno->matriculas->sortByDesc('periodo')->first()?->periodo }}
+    </h3>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Monto Matrícula</p>
+            <p class="text-lg font-extrabold text-slate-800">S/ {{ number_format($pagoMat->monto_matricula, 2) }}</p>
+        </div>
+        <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Pensión Mensual</p>
+            <p class="text-lg font-extrabold text-slate-800">S/ {{ number_format($pagoMat->pension_mensual, 2) }}</p>
+        </div>
+        <div class="bg-slate-50 rounded-xl p-3 border border-slate-100">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">N° Pensiones</p>
+            <p class="text-lg font-extrabold text-slate-800">{{ $pagoMat->numero_pensiones ?? 10 }}</p>
+        </div>
+        <div class="rounded-xl p-3 border {{ $pagoMat->estado_pago === 'PAGADO' ? 'bg-green-50 border-green-200' : 'bg-yellow-50 border-yellow-200' }}">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wide mb-1">Estado</p>
+            <span class="inline-flex items-center gap-1.5 text-sm font-extrabold
+                {{ $pagoMat->estado_pago === 'PAGADO' ? 'text-green-700' : 'text-yellow-700' }}">
+                <i class="fa-solid {{ $pagoMat->estado_pago === 'PAGADO' ? 'fa-circle-check' : 'fa-clock' }} text-xs"></i>
+                {{ $pagoMat->estado_pago }}
+            </span>
+        </div>
+    </div>
+</div>
+@endif
+
 <!-- Month Grid -->
 <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mb-6" x-data="{ openModal: false, selectedMes: '', monto: 0 }">
 
-    @foreach($meses as $mes)
+    @foreach($mesesActivos as $mes)
         @php
             $pago = $pagos[$mes] ?? null;
         @endphp
@@ -77,11 +110,11 @@
             <div class="flex items-start justify-between mb-3">
                 <h4 class="font-bold text-slate-700 text-sm">{{ $mes }}</h4>
                 @if($pago)
-                    <span class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span class="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center shrink-0">
                         <i class="fa-solid fa-check text-white text-xs"></i>
                     </span>
                 @else
-                    <span class="w-6 h-6 bg-slate-200 rounded-full flex items-center justify-center flex-shrink-0">
+                    <span class="w-6 h-6 bg-slate-200 rounded-full flex items-center justify-center shrink-0">
                         <i class="fa-solid fa-minus text-slate-400 text-xs"></i>
                     </span>
                 @endif
@@ -178,22 +211,49 @@
 <!-- Summary -->
 <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
     @php
-        $totalPagado = $pagos->sum('monto');
-        $mesesPagados = $pagos->count();
+        $totalPagado   = $pagos->sum('monto');
+        $mesesPagados  = $pagos->count();
+        $totalMeses    = count($mesesActivos);
+        $pendientes    = $totalMeses - $mesesPagados;
+        $pct           = $totalMeses > 0 ? round(($mesesPagados / $totalMeses) * 100) : 0;
     @endphp
     <h3 class="text-slate-800 font-semibold text-base mb-4">Resumen {{ $anio }}</h3>
+
+    {{-- Barra de progreso ─────────────────────────── --}}
+    <div class="mb-5">
+        <div class="flex items-center justify-between mb-1.5">
+            <span class="text-xs font-bold text-slate-600">Progreso de pagos</span>
+            <span class="text-xs font-bold {{ $pct >= 100 ? 'text-green-600' : ($pct >= 50 ? 'text-blue-600' : 'text-yellow-600') }}">
+                {{ $mesesPagados }}/{{ $totalMeses }} meses ({{ $pct }}%)
+            </span>
+        </div>
+        <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden">
+            <div class="h-full rounded-full transition-all
+                {{ $pct >= 100 ? 'bg-green-500' : ($pct >= 50 ? 'bg-blue-500' : 'bg-yellow-400') }}"
+                 style="width: {{ $pct }}%"></div>
+        </div>
+        <div class="flex justify-between mt-1">
+            @foreach($mesesActivos as $m)
+                <div class="flex flex-col items-center" style="width: {{ 100 / $totalMeses }}%">
+                    <div class="w-1.5 h-1.5 rounded-full mt-0.5
+                        {{ isset($pagos[$m]) ? 'bg-green-500' : 'bg-slate-200' }}"></div>
+                </div>
+            @endforeach
+        </div>
+    </div>
+
     <div class="grid grid-cols-3 gap-4">
-        <div class="text-center p-4 bg-green-50 rounded-xl">
+        <div class="text-center p-4 bg-green-50 rounded-xl border border-green-100">
             <p class="text-2xl font-bold text-green-700">{{ $mesesPagados }}</p>
-            <p class="text-green-600 text-xs font-medium mt-1">Meses Pagados</p>
+            <p class="text-green-600 text-xs font-semibold mt-1 uppercase tracking-wide">Meses Pagados</p>
         </div>
-        <div class="text-center p-4 bg-yellow-50 rounded-xl">
-            <p class="text-2xl font-bold text-yellow-700">{{ count($meses) - $mesesPagados }}</p>
-            <p class="text-yellow-600 text-xs font-medium mt-1">Meses Pendientes</p>
+        <div class="text-center p-4 bg-yellow-50 rounded-xl border border-yellow-100">
+            <p class="text-2xl font-bold text-yellow-700">{{ $pendientes }}</p>
+            <p class="text-yellow-600 text-xs font-semibold mt-1 uppercase tracking-wide">Pendientes</p>
         </div>
-        <div class="text-center p-4 bg-blue-50 rounded-xl">
-            <p class="text-2xl font-bold text-blue-700">S/ {{ number_format($totalPagado, 2) }}</p>
-            <p class="text-blue-600 text-xs font-medium mt-1">Total Recaudado</p>
+        <div class="text-center p-4 bg-blue-50 rounded-xl border border-blue-100">
+            <p class="text-xl font-bold text-blue-700">S/ {{ number_format($totalPagado, 2) }}</p>
+            <p class="text-blue-600 text-xs font-semibold mt-1 uppercase tracking-wide">Total Recaudado</p>
         </div>
     </div>
 </div>

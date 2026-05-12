@@ -286,9 +286,14 @@ table.mat-table tr:nth-child(even) td { background: #f8fafc; }
         </p>
 
         <!-- Firma -->
+        @php $firmaDiskPath = \App\Helpers\ConfiguracionColegio::firmaDiskPath(); @endphp
         <div class="firma-box">
             <div class="firma-inner">
-                <div class="firma-space"></div>
+                @if($firmaDiskPath && file_exists($firmaDiskPath))
+                    <img src="{{ $firmaDiskPath }}" style="max-height:75px;max-width:180px;object-fit:contain;display:block;margin:0 auto 4px;">
+                @else
+                    <div class="firma-space"></div>
+                @endif
                 <div class="firma-linea"></div>
                 <strong>Director(a)</strong>
                 <p>Colegio Pre JEDSON</p>
